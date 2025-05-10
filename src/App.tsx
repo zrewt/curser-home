@@ -5,7 +5,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Welcome to My React App</h1>
+        <h1>Welcome to My React App 69</h1>
         <p className="subtitle">A modern web application built with React and TypeScript</p>
       </header>
       <main className="App-main">
