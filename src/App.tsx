@@ -7,8 +7,9 @@ interface Question {
   incorrect_answers: string[];
 }
 
-// Backup questions in case API is rate limited
+// Backup questions focused on soccer, baseball, basketball, and football
 const backupQuestions: Question[] = [
+  // Soccer Questions
   {
     question: "What is the name of Manchester United's home stadium?",
     correct_answer: "Old Trafford",
@@ -20,44 +21,62 @@ const backupQuestions: Question[] = [
     incorrect_answers: ["France", "Brazil", "Portugal"]
   },
   {
+    question: "How many players are on a soccer team?",
+    correct_answer: "11",
+    incorrect_answers: ["10", "12", "9"]
+  },
+  {
+    question: "Which team has won the most UEFA Champions League titles?",
+    correct_answer: "Real Madrid",
+    incorrect_answers: ["Barcelona", "Bayern Munich", "AC Milan"]
+  },
+  // Basketball Questions
+  {
     question: "Who won the NBA Championship in 2023?",
     correct_answer: "Denver Nuggets",
     incorrect_answers: ["Los Angeles Lakers", "Boston Celtics", "Miami Heat"]
   },
   {
-    question: "Which tennis player has won the most Grand Slam titles?",
-    correct_answer: "Novak Djokovic",
-    incorrect_answers: ["Roger Federer", "Rafael Nadal", "Pete Sampras"]
+    question: "How many points is a three-pointer worth in basketball?",
+    correct_answer: "3",
+    incorrect_answers: ["2", "4", "1"]
   },
   {
-    question: "In which sport would you perform a slam dunk?",
-    correct_answer: "Basketball",
-    incorrect_answers: ["Volleyball", "Tennis", "Golf"]
+    question: "Which team does LeBron James play for?",
+    correct_answer: "Los Angeles Lakers",
+    incorrect_answers: ["Boston Celtics", "Miami Heat", "Cleveland Cavaliers"]
   },
+  // Baseball Questions
+  {
+    question: "How many innings are in a standard baseball game?",
+    correct_answer: "9",
+    incorrect_answers: ["7", "8", "10"]
+  },
+  {
+    question: "Which team won the World Series in 2023?",
+    correct_answer: "Texas Rangers",
+    incorrect_answers: ["Arizona Diamondbacks", "Houston Astros", "New York Yankees"]
+  },
+  {
+    question: "How many players are on a baseball field at once?",
+    correct_answer: "9",
+    incorrect_answers: ["10", "8", "11"]
+  },
+  // Football Questions
   {
     question: "Which team won the Super Bowl in 2024?",
     correct_answer: "Kansas City Chiefs",
     incorrect_answers: ["San Francisco 49ers", "Baltimore Ravens", "Detroit Lions"]
   },
   {
-    question: "Who holds the record for most Olympic gold medals?",
-    correct_answer: "Michael Phelps",
-    incorrect_answers: ["Usain Bolt", "Carl Lewis", "Mark Spitz"]
+    question: "How many points is a touchdown worth in football?",
+    correct_answer: "6",
+    incorrect_answers: ["7", "5", "4"]
   },
   {
-    question: "Which country won the Rugby World Cup in 2023?",
-    correct_answer: "South Africa",
-    incorrect_answers: ["New Zealand", "England", "France"]
-  },
-  {
-    question: "In which sport would you use a 'green jacket' as a prize?",
-    correct_answer: "Golf",
-    incorrect_answers: ["Tennis", "Boxing", "Horse Racing"]
-  },
-  {
-    question: "Which team has won the most UEFA Champions League titles?",
-    correct_answer: "Real Madrid",
-    incorrect_answers: ["Barcelona", "Bayern Munich", "AC Milan"]
+    question: "Which team does Patrick Mahomes play for?",
+    correct_answer: "Kansas City Chiefs",
+    incorrect_answers: ["San Francisco 49ers", "Baltimore Ravens", "Detroit Lions"]
   }
 ];
 
@@ -116,20 +135,35 @@ function App() {
         );
         
         if (response.status === 429) {
-          // If rate limited, use backup questions
           setQuestions(getBackupQuestions());
           setUsingBackup(true);
         } else {
           const data = await response.json();
           if (data.results && data.results.length > 0) {
-            // Decode HTML entities in questions and answers
-            const decodedQuestions = data.results.map((q: Question) => ({
-              question: decodeHTML(q.question),
-              correct_answer: decodeHTML(q.correct_answer),
-              incorrect_answers: q.incorrect_answers.map(decodeHTML)
-            }));
-            setQuestions(decodedQuestions);
-            setUsingBackup(false);
+            // Filter for only soccer, baseball, basketball, and football questions
+            const filteredQuestions = data.results.filter((q: Question) => {
+              const questionText = q.question.toLowerCase();
+              return questionText.includes('soccer') || 
+                     questionText.includes('football') || 
+                     questionText.includes('baseball') || 
+                     questionText.includes('basketball') ||
+                     questionText.includes('nba') ||
+                     questionText.includes('mlb') ||
+                     questionText.includes('nfl');
+            });
+
+            if (filteredQuestions.length >= 3) {
+              const decodedQuestions = filteredQuestions.slice(0, 3).map((q: Question) => ({
+                question: decodeHTML(q.question),
+                correct_answer: decodeHTML(q.correct_answer),
+                incorrect_answers: q.incorrect_answers.map(decodeHTML)
+              }));
+              setQuestions(decodedQuestions);
+              setUsingBackup(false);
+            } else {
+              setQuestions(getBackupQuestions());
+              setUsingBackup(true);
+            }
           } else {
             setQuestions(getBackupQuestions());
             setUsingBackup(true);
@@ -182,7 +216,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>🏆 Daily Sports Quiz 🏆</h1>
-        <p className="subtitle">Test your sports knowledge!</p>
+        <p className="subtitle">Test your knowledge of Soccer, Baseball, Basketball, and Football!</p>
         <p className="timer">{timeUntilNextQuiz}</p>
         {usingBackup && (
           <p className="backup-notice">Using backup questions due to API limit</p>
@@ -224,3 +258,4 @@ function App() {
 }
 
 export default App;
+
