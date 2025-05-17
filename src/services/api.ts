@@ -1,6 +1,9 @@
+// src/api/index.ts or similar
+
 import { Question } from '../types';
 
-const API_BASE_URL = 'http://localhost:3001/api';
+// Hardcoded deployed backend URL
+const API_BASE_URL = 'https://backend-triv.onrender.com/api';
 
 export const api = {
   async getQuestions(count: number = 5): Promise<Question[]> {
@@ -15,4 +18,4 @@ export const api = {
       throw error;
     }
   }
-}; 
+};
