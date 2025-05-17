@@ -5,71 +5,61 @@ interface Question {
   question: string;
   correct_answer: string;
   incorrect_answers: string[];
-  difficulty?: string;
 }
 
-// Backup questions with difficulty levels
+// Backup questions in case API is rate limited
 const backupQuestions: Question[] = [
-  // Easy Questions
   {
-    question: "In which sport would you perform a slam dunk?",
-    correct_answer: "Basketball",
-    incorrect_answers: ["Volleyball", "Tennis", "Golf"],
-    difficulty: "easy"
+    question: "What is the name of Manchester United's home stadium?",
+    correct_answer: "Old Trafford",
+    incorrect_answers: ["Anfield", "Emirates Stadium", "Stamford Bridge"]
   },
-  {
-    question: "Which team plays at Old Trafford?",
-    correct_answer: "Manchester United",
-    incorrect_answers: ["Liverpool", "Arsenal", "Chelsea"],
-    difficulty: "easy"
-  },
-  {
-    question: "How many players are on a soccer team?",
-    correct_answer: "11",
-    incorrect_answers: ["10", "12", "9"],
-    difficulty: "easy"
-  },
-  // Medium Questions
   {
     question: "Which country won the FIFA World Cup in 2022?",
     correct_answer: "Argentina",
-    incorrect_answers: ["France", "Brazil", "Portugal"],
-    difficulty: "medium"
+    incorrect_answers: ["France", "Brazil", "Portugal"]
   },
   {
     question: "Who won the NBA Championship in 2023?",
     correct_answer: "Denver Nuggets",
-    incorrect_answers: ["Los Angeles Lakers", "Boston Celtics", "Miami Heat"],
-    difficulty: "medium"
+    incorrect_answers: ["Los Angeles Lakers", "Boston Celtics", "Miami Heat"]
+  },
+  {
+    question: "Which tennis player has won the most Grand Slam titles?",
+    correct_answer: "Novak Djokovic",
+    incorrect_answers: ["Roger Federer", "Rafael Nadal", "Pete Sampras"]
+  },
+  {
+    question: "In which sport would you perform a slam dunk?",
+    correct_answer: "Basketball",
+    incorrect_answers: ["Volleyball", "Tennis", "Golf"]
   },
   {
     question: "Which team won the Super Bowl in 2024?",
     correct_answer: "Kansas City Chiefs",
-    incorrect_answers: ["San Francisco 49ers", "Baltimore Ravens", "Detroit Lions"],
-    difficulty: "medium"
-  },
-  // Hard Questions
-  {
-    question: "Which tennis player has won the most Grand Slam titles?",
-    correct_answer: "Novak Djokovic",
-    incorrect_answers: ["Roger Federer", "Rafael Nadal", "Pete Sampras"],
-    difficulty: "hard"
+    incorrect_answers: ["San Francisco 49ers", "Baltimore Ravens", "Detroit Lions"]
   },
   {
     question: "Who holds the record for most Olympic gold medals?",
     correct_answer: "Michael Phelps",
-    incorrect_answers: ["Usain Bolt", "Carl Lewis", "Mark Spitz"],
-    difficulty: "hard"
+    incorrect_answers: ["Usain Bolt", "Carl Lewis", "Mark Spitz"]
   },
   {
     question: "Which country won the Rugby World Cup in 2023?",
     correct_answer: "South Africa",
-    incorrect_answers: ["New Zealand", "England", "France"],
-    difficulty: "hard"
+    incorrect_answers: ["New Zealand", "England", "France"]
+  },
+  {
+    question: "In which sport would you use a 'green jacket' as a prize?",
+    correct_answer: "Golf",
+    incorrect_answers: ["Tennis", "Boxing", "Horse Racing"]
+  },
+  {
+    question: "Which team has won the most UEFA Champions League titles?",
+    correct_answer: "Real Madrid",
+    incorrect_answers: ["Barcelona", "Bayern Munich", "AC Milan"]
   }
 ];
-
-type Difficulty = 'easy' | 'medium' | 'hard';
 
 function App() {
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -79,8 +69,6 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [timeUntilNextQuiz, setTimeUntilNextQuiz] = useState('');
   const [usingBackup, setUsingBackup] = useState(false);
-  const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty | null>(null);
-  const [showDifficultySelect, setShowDifficultySelect] = useState(true);
 
   // Function to get today's date in YYYY-MM-DD format
   const getTodayDate = () => {
@@ -88,12 +76,11 @@ function App() {
     return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
   };
 
-  // Function to get backup questions for today based on difficulty
-  const getBackupQuestions = (difficulty: Difficulty) => {
+  // Function to get backup questions for today
+  const getBackupQuestions = () => {
     const today = getTodayDate();
     const seed = today.split('-').reduce((acc, val) => acc + parseInt(val), 0);
-    const filteredQuestions = backupQuestions.filter(q => q.difficulty === difficulty);
-    const shuffled = [...filteredQuestions].sort(() => {
+    const shuffled = [...backupQuestions].sort(() => {
       return Math.sin(seed + Math.random()) - 0.5;
     });
     return shuffled.slice(0, 3);
@@ -120,53 +107,49 @@ function App() {
     return txt.value;
   };
 
-  const fetchQuestions = async (difficulty: Difficulty) => {
-    try {
-      setLoading(true);
-      
-      // Create a timeout promise
-      const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('Timeout')), 3000); // 3 second timeout
-      });
-
-      // Race between the API call and the timeout
-      const response = await Promise.race([
-        fetch(`https://opentdb.com/api.php?amount=3&category=21&type=multiple&difficulty=${difficulty}`),
-        timeoutPromise
-      ]) as Response;
-      
-      if (response.status === 429) {
-        setQuestions(getBackupQuestions(difficulty));
-        setUsingBackup(true);
-      } else {
-        const data = await response.json();
-        if (data.results && data.results.length > 0) {
-          const decodedQuestions = data.results.map((q: Question) => ({
-            question: decodeHTML(q.question),
-            correct_answer: decodeHTML(q.correct_answer),
-            incorrect_answers: q.incorrect_answers.map(decodeHTML)
-          }));
-          setQuestions(decodedQuestions);
-          setUsingBackup(false);
-        } else {
-          setQuestions(getBackupQuestions(difficulty));
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(
+          'https://opentdb.com/api.php?amount=3&category=21&type=multiple'
+        );
+        
+        if (response.status === 429) {
+          // If rate limited, use backup questions
+          setQuestions(getBackupQuestions());
           setUsingBackup(true);
+        } else {
+          const data = await response.json();
+          if (data.results && data.results.length > 0) {
+            // Decode HTML entities in questions and answers
+            const decodedQuestions = data.results.map((q: Question) => ({
+              question: decodeHTML(q.question),
+              correct_answer: decodeHTML(q.correct_answer),
+              incorrect_answers: q.incorrect_answers.map(decodeHTML)
+            }));
+            setQuestions(decodedQuestions);
+            setUsingBackup(false);
+          } else {
+            setQuestions(getBackupQuestions());
+            setUsingBackup(true);
+          }
         }
+      } catch (error) {
+        console.error('Error fetching questions:', error);
+        setQuestions(getBackupQuestions());
+        setUsingBackup(true);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error('Error fetching questions:', error);
-      setQuestions(getBackupQuestions(difficulty));
-      setUsingBackup(true);
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
 
-  const handleDifficultySelect = (difficulty: Difficulty) => {
-    setSelectedDifficulty(difficulty);
-    setShowDifficultySelect(false);
-    fetchQuestions(difficulty);
-  };
+    fetchQuestions();
+    updateTimeUntilNextQuiz();
+    const interval = setInterval(updateTimeUntilNextQuiz, 60000);
+    
+    return () => clearInterval(interval);
+  }, []);
 
   const handleAnswerClick = (selectedAnswer: string) => {
     if (questions[currentQuestion]?.correct_answer === selectedAnswer) {
@@ -185,54 +168,12 @@ function App() {
     setCurrentQuestion(0);
     setScore(0);
     setShowScore(false);
-    setShowDifficultySelect(true);
-    setSelectedDifficulty(null);
   };
-
-  useEffect(() => {
-    updateTimeUntilNextQuiz();
-    const interval = setInterval(updateTimeUntilNextQuiz, 60000);
-    return () => clearInterval(interval);
-  }, []);
 
   if (loading) {
     return (
       <div className="App">
         <div className="loading">Loading questions...</div>
-      </div>
-    );
-  }
-
-  if (showDifficultySelect) {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <h1>🏆 Daily Sports Quiz 🏆</h1>
-          <p className="subtitle">Choose your difficulty level</p>
-          <p className="timer">{timeUntilNextQuiz}</p>
-        </header>
-        <main className="App-main">
-          <div className="difficulty-section">
-            <button 
-              className="difficulty-button easy"
-              onClick={() => handleDifficultySelect('easy')}
-            >
-              Easy
-            </button>
-            <button 
-              className="difficulty-button medium"
-              onClick={() => handleDifficultySelect('medium')}
-            >
-              Medium
-            </button>
-            <button 
-              className="difficulty-button hard"
-              onClick={() => handleDifficultySelect('hard')}
-            >
-              Hard
-            </button>
-          </div>
-        </main>
       </div>
     );
   }
@@ -246,7 +187,6 @@ function App() {
         {usingBackup && (
           <p className="backup-notice">Using backup questions due to API limit</p>
         )}
-        <p className="difficulty-badge">{selectedDifficulty}</p>
       </header>
       <main className="App-main">
         {showScore ? (
