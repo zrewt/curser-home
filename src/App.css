@@ -1,8 +1,7 @@
 .App {
   text-align: center;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  background-color: #f0f2f5;
 }
 
 .App-logo {
@@ -17,15 +16,14 @@
 }
 
 .App-header {
-  background-color: #282c34;
-  padding: 4rem 2rem;
+  background-color: #1a237e;
+  padding: 20px;
   color: white;
 }
 
 .App-header h1 {
-  font-size: 3rem;
   margin: 0;
-  margin-bottom: 1rem;
+  font-size: 2.5rem;
 }
 
 .subtitle {
@@ -34,40 +32,81 @@
 }
 
 .App-main {
-  flex: 1;
-  padding: 2rem;
-  background-color: #f5f5f5;
-}
-
-.features {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-  max-width: 1200px;
+  max-width: 800px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 20px;
 }
 
-.feature-card {
-  background: white;
-  padding: 2rem;
+.question-section {
+  background-color: white;
   border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
 }
 
-.feature-card:hover {
-  transform: translateY(-5px);
+.question-section h2 {
+  color: #1a237e;
+  margin-bottom: 20px;
 }
 
-.feature-card h2 {
-  color: #282c34;
-  margin-bottom: 1rem;
+.answer-buttons {
+  display: grid;
+  gap: 10px;
+  margin-top: 20px;
 }
 
-.feature-card p {
-  color: #666;
-  line-height: 1.6;
+.answer-button {
+  background-color: #e3f2fd;
+  border: 2px solid #1a237e;
+  border-radius: 5px;
+  padding: 15px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.answer-button:hover {
+  background-color: #1a237e;
+  color: white;
+}
+
+.score-section {
+  background-color: white;
+  border-radius: 10px;
+  padding: 30px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+.score-section h2 {
+  color: #1a237e;
+  margin-bottom: 20px;
+}
+
+.score-section button {
+  background-color: #1a237e;
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.score-section button:hover {
+  background-color: #283593;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 1.5rem;
+  color: #1a237e;
 }
 
 .App-footer {
@@ -94,9 +133,57 @@
   .App-header h1 {
     font-size: 2rem;
   }
-  
-  .features {
-    grid-template-columns: 1fr;
-    padding: 1rem;
-  }
+}
+
+.error-section {
+  background-color: white;
+  border-radius: 10px;
+  padding: 30px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 20px auto;
+  max-width: 500px;
+}
+
+.error-section h2 {
+  color: #d32f2f;
+  margin-bottom: 20px;
+}
+
+.error-section p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.error-section button {
+  background-color: #1a237e;
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.error-section button:hover {
+  background-color: #283593;
+}
+
+.timer {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  margin-top: 10px;
+  display: inline-block;
+}
+
+.backup-notice {
+  background-color: #ff9800;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  margin-top: 10px;
+  display: inline-block;
 }
