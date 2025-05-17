@@ -123,9 +123,17 @@ function App() {
   const fetchQuestions = async (difficulty: Difficulty) => {
     try {
       setLoading(true);
-      const response = await fetch(
-        `https://opentdb.com/api.php?amount=3&category=21&type=multiple&difficulty=${difficulty}`
-      );
+      
+      // Create a timeout promise
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Timeout')), 3000); // 3 second timeout
+      });
+
+      // Race between the API call and the timeout
+      const response = await Promise.race([
+        fetch(`https://opentdb.com/api.php?amount=3&category=21&type=multiple&difficulty=${difficulty}`),
+        timeoutPromise
+      ]) as Response;
       
       if (response.status === 429) {
         setQuestions(getBackupQuestions(difficulty));
