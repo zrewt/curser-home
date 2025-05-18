@@ -262,3 +262,47 @@
   margin: 10px 0;
   font-size: 0.9em;
 }
+
+.difficulty-selection {
+  text-align: center;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  margin: 2rem auto;
+  max-width: 600px;
+}
+
+.difficulty-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.difficulty-button {
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #4a90e2;
+  color: white;
+  min-width: 120px;
+}
+
+.difficulty-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.difficulty-button:active {
+  transform: translateY(0);
+}
+
+.difficulty-indicator {
+  font-size: 0.9rem;
+  color: #888;
+  margin-bottom: 1rem;
+  font-style: italic;
+}
