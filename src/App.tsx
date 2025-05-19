@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import { Question } from './types';
+import { Question, Difficulty } from './types';
 import { api } from './services/api';
 
 function App() {
@@ -8,26 +8,24 @@ function App() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
   const [showScore, setShowScore] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty | null>(null);
 
-  useEffect(() => {
-    const fetchQuestions = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const data = await api.getQuestions(5);
-        setQuestions(data);
-      } catch (error) {
-        console.error('Error fetching questions:', error);
-        setError('Failed to fetch questions. Please try again later.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchQuestions();
-  }, []);
+  const fetchQuestions = async (difficulty: Difficulty) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await api.getQuestions(5, difficulty);
+      setQuestions(data);
+      setSelectedDifficulty(difficulty);
+    } catch (error) {
+      console.error('Error fetching questions:', error);
+      setError('Failed to fetch questions. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleAnswerClick = (selectedAnswer: string) => {
     if (questions[currentQuestion]?.correct_answer === selectedAnswer) {
@@ -46,22 +44,7 @@ function App() {
     setCurrentQuestion(0);
     setScore(0);
     setShowScore(false);
-    // Fetch new random questions
-    fetchQuestions();
-  };
-
-  const fetchQuestions = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await api.getQuestions(5);
-      setQuestions(data);
-    } catch (error) {
-      console.error('Error fetching questions:', error);
-      setError('Failed to fetch questions. Please try again later.');
-    } finally {
-      setLoading(false);
-    }
+    setSelectedDifficulty(null);
   };
 
   if (loading) {
@@ -72,11 +55,48 @@ function App() {
     );
   }
 
+  if (!selectedDifficulty) {
+    return (
+      <div className="App">
+        <header className="App-header">
+          <h1>🏆 Sports Quiz 🏆</h1>
+          <p className="subtitle">Test your knowledge of Soccer, Baseball, Basketball, and Football!</p>
+        </header>
+        <div className="difficulty-selection">
+          <h2>Select Difficulty</h2>
+          <div className="difficulty-buttons">
+            <button 
+              className="difficulty-button easy"
+              onClick={() => fetchQuestions('easy')}
+            >
+              Easy
+            </button>
+            <button 
+              className="difficulty-button medium"
+              onClick={() => fetchQuestions('medium')}
+            >
+              Medium
+            </button>
+            <button 
+              className="difficulty-button hard"
+              onClick={() => fetchQuestions('hard')}
+            >
+              Hard
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="App">
       <header className="App-header">
         <h1>🏆 Sports Quiz 🏆</h1>
         <p className="subtitle">Test your knowledge of Soccer, Baseball, Basketball, and Football!</p>
+        <div className="difficulty-badge">
+          {selectedDifficulty.charAt(0).toUpperCase() + selectedDifficulty.slice(1)}
+        </div>
         {error && (
           <p className="error-notice">{error}</p>
         )}
