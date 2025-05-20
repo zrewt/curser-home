@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import { Question, Difficulty } from './types';
 import { api } from './services/api';
@@ -11,6 +11,8 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty | null>(null);
+  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+  const [shuffledAnswers, setShuffledAnswers] = useState<string[]>([]);
 
   const fetchQuestions = async (difficulty: Difficulty) => {
     try {
@@ -19,6 +21,13 @@ function App() {
       const data = await api.getQuestions(5, difficulty);
       setQuestions(data);
       setSelectedDifficulty(difficulty);
+      if (data.length > 0) {
+        const answers = [
+          data[0].correct_answer,
+          ...data[0].incorrect_answers
+        ].sort(() => Math.random() - 0.5);
+        setShuffledAnswers(answers);
+      }
     } catch (error) {
       console.error('Error fetching questions:', error);
       setError('Failed to fetch questions. Please try again later.');
@@ -28,16 +37,26 @@ function App() {
   };
 
   const handleAnswerClick = (selectedAnswer: string) => {
+    setSelectedAnswer(selectedAnswer);
+    
     if (questions[currentQuestion]?.correct_answer === selectedAnswer) {
       setScore(score + 1);
     }
 
-    const nextQuestion = currentQuestion + 1;
-    if (nextQuestion < questions.length) {
-      setCurrentQuestion(nextQuestion);
-    } else {
-      setShowScore(true);
-    }
+    setTimeout(() => {
+      const nextQuestion = currentQuestion + 1;
+      if (nextQuestion < questions.length) {
+        setCurrentQuestion(nextQuestion);
+        setSelectedAnswer(null);
+        const answers = [
+          questions[nextQuestion].correct_answer,
+          ...questions[nextQuestion].incorrect_answers
+        ].sort(() => Math.random() - 0.5);
+        setShuffledAnswers(answers);
+      } else {
+        setShowScore(true);
+      }
+    }, 1000);
   };
 
   const resetQuiz = () => {
@@ -45,12 +64,23 @@ function App() {
     setScore(0);
     setShowScore(false);
     setSelectedDifficulty(null);
+    setSelectedAnswer(null);
+    if (questions.length > 0) {
+      const answers = [
+        questions[0].correct_answer,
+        ...questions[0].incorrect_answers
+      ].sort(() => Math.random() - 0.5);
+      setShuffledAnswers(answers);
+    }
   };
 
   if (loading) {
     return (
       <div className="App">
-        <div className="loading">Loading questions...</div>
+        <div className="loading">
+          <div className="loading-spinner"></div>
+          <p>Loading questions...</p>
+        </div>
       </div>
     );
   }
@@ -95,7 +125,7 @@ function App() {
         <h1>🏆 Sports Quiz 🏆</h1>
         <p className="subtitle">Test your knowledge of Soccer, Baseball, Basketball, and Football!</p>
         <div className="difficulty-badge">
-          {selectedDifficulty.charAt(0).toUpperCase() + selectedDifficulty.slice(1)}
+          {selectedDifficulty?.charAt(0).toUpperCase() + selectedDifficulty?.slice(1)}
         </div>
         {error && (
           <p className="error-notice">{error}</p>
@@ -104,30 +134,34 @@ function App() {
       <main className="App-main">
         {showScore ? (
           <div className="score-section">
-            <h2>Quiz Complete!</h2>
+            <h2>Quiz Complete! 🎉</h2>
             <p>You scored {score} out of {questions.length}</p>
-            <p>Percentage: {Math.round((score / questions.length) * 100)}%</p>
-            <button onClick={resetQuiz}>New Quiz</button>
+            <p className="score-percentage">
+              {Math.round((score / questions.length) * 100)}%
+            </p>
+            <button onClick={resetQuiz}>Try Another Quiz</button>
           </div>
         ) : (
           <div className="question-section">
-            <h2>Question {currentQuestion + 1}</h2>
+            <div className="progress-bar">
+              <div 
+                className="progress-fill"
+                style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
+              ></div>
+            </div>
+            <h2>Question {currentQuestion + 1} of {questions.length}</h2>
             <p>{questions[currentQuestion]?.question}</p>
             <div className="answer-buttons">
-              {[
-                questions[currentQuestion]?.correct_answer,
-                ...questions[currentQuestion]?.incorrect_answers
-              ]
-                .sort(() => Math.random() - 0.5)
-                .map((answer, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handleAnswerClick(answer)}
-                    className="answer-button"
-                  >
-                    {answer}
-                  </button>
-                ))}
+              {shuffledAnswers.map((answer, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleAnswerClick(answer)}
+                  className="answer-button"
+                  disabled={selectedAnswer !== null}
+                >
+                  {answer}
+                </button>
+              ))}
             </div>
           </div>
         )}
