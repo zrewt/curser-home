@@ -3,6 +3,8 @@
   min-height: 100vh;
   background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 .App-header {
@@ -261,18 +263,81 @@
 
 @media (max-width: 768px) {
   .App-header h1 {
-    font-size: 2rem;
+    font-size: 1.8rem;
+    padding: 0 1rem;
   }
-  
-  .question-section,
-  .score-section,
+
+  .subtitle {
+    font-size: 1rem;
+    padding: 0 1rem;
+  }
+
+  .App-main {
+    padding: 0 1rem;
+    margin: 1rem auto;
+  }
+
+  .question-section {
+    padding: 1.5rem;
+    margin-top: 1rem;
+  }
+
+  .question-section h2 {
+    font-size: 1.3rem;
+  }
+
+  .question-section p {
+    font-size: 1.1rem;
+  }
+
+  .answer-button {
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+  }
+
   .difficulty-selection {
     padding: 1.5rem;
     margin: 1rem;
   }
-  
-  .answer-button {
-    padding: 0.875rem 1.25rem;
+
+  .difficulty-button {
+    padding: 1rem;
+    font-size: 1.1rem;
+  }
+
+  .score-section {
+    padding: 2rem 1rem;
+  }
+
+  .score-section h2 {
+    font-size: 1.5rem;
+  }
+
+  .score-section p {
+    font-size: 1.1rem;
+  }
+
+  .score-section button {
+    padding: 0.8rem 1.5rem;
     font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .App-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+  }
+
+  .question-section {
+    padding: 1rem;
+  }
+
+  .answer-button {
+    padding: 0.7rem 0.9rem;
+    font-size: 0.9rem;
   }
 }
