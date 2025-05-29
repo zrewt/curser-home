@@ -19,15 +19,25 @@ function App() {
       setLoading(true);
       setError(null);
       const data = await api.getQuestions(5, difficulty);
+      
+      if (!data || data.length === 0) {
+        setError('No questions available. Please try again.');
+        setSelectedDifficulty(null);
+        return;
+      }
+
       setQuestions(data);
       setSelectedDifficulty(difficulty);
-      if (data.length > 0) {
-        const answers = [
-          data[0].correct_answer,
-          ...data[0].incorrect_answers
-        ].sort(() => Math.random() - 0.5);
-        setShuffledAnswers(answers);
-      }
+      setCurrentQuestion(0);
+      setScore(0);
+      setShowScore(false);
+      
+      // Set initial shuffled answers
+      const answers = [
+        data[0].correct_answer,
+        ...data[0].incorrect_answers
+      ].sort(() => Math.random() - 0.5);
+      setShuffledAnswers(answers);
     } catch (error) {
       console.error('Error fetching questions:', error);
       setError('Failed to fetch questions. Please try again later.');
@@ -66,13 +76,8 @@ function App() {
     setShowScore(false);
     setSelectedDifficulty(null);
     setSelectedAnswer(null);
-    if (questions.length > 0) {
-      const answers = [
-        questions[0].correct_answer,
-        ...questions[0].incorrect_answers
-      ].sort(() => Math.random() - 0.5);
-      setShuffledAnswers(answers);
-    }
+    setQuestions([]);
+    setShuffledAnswers([]);
   };
 
   if (loading) {
@@ -86,7 +91,7 @@ function App() {
     );
   }
 
-  if (!selectedDifficulty) {
+  if (!selectedDifficulty || questions.length === 0) {
     return (
       <div className="App">
         <header className="App-header">
