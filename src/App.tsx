@@ -19,6 +19,11 @@ function App() {
       setLoading(true);
       setError(null);
       const data = await api.getQuestions(5, difficulty);
+      if (data.length === 0) {
+        setError(`No questions available for ${difficulty} difficulty. Please try a different difficulty.`);
+        setSelectedDifficulty(null);
+        return;
+      }
       setQuestions(data);
       setSelectedDifficulty(difficulty);
       if (data.length > 0) {
@@ -31,6 +36,7 @@ function App() {
     } catch (error) {
       console.error('Error fetching questions:', error);
       setError('Failed to fetch questions. Please try again later.');
+      setSelectedDifficulty(null);
     } finally {
       setLoading(false);
     }
@@ -90,30 +96,40 @@ function App() {
       <div className="App">
         <header className="App-header">
           <h1>🏆 Sports Quiz 🏆</h1>
-          <p className="subtitle">Test your knowledge of Soccer, Baseball, Basketball, and Football!</p>
+          <p className="subtitle">Test your knowledge of various sports!</p>
         </header>
-        <div className="difficulty-selection">
-          <h2>Select Difficulty</h2>
-          <div className="difficulty-buttons">
-            <button 
-              className="difficulty-button easy"
-              onClick={() => fetchQuestions('easy')}
-            >
-              Easy
-            </button>
-            <button 
-              className="difficulty-button medium"
-              onClick={() => fetchQuestions('medium')}
-            >
-              Medium
-            </button>
-            <button 
-              className="difficulty-button hard"
-              onClick={() => fetchQuestions('hard')}
-            >
-              Hard
-            </button>
+        <div className="selection-container">
+          <div className="difficulty-selection">
+            <h2>Select Difficulty</h2>
+            <div className="difficulty-buttons">
+              <button 
+                className="difficulty-button easy"
+                onClick={() => setSelectedDifficulty('easy')}
+              >
+                Easy
+              </button>
+              <button 
+                className="difficulty-button medium"
+                onClick={() => setSelectedDifficulty('medium')}
+              >
+                Medium
+              </button>
+              <button 
+                className="difficulty-button hard"
+                onClick={() => setSelectedDifficulty('hard')}
+              >
+                Hard
+              </button>
+            </div>
           </div>
+          {selectedDifficulty && (
+            <button 
+              className="start-quiz-button"
+              onClick={() => fetchQuestions(selectedDifficulty)}
+            >
+              Start Quiz
+            </button>
+          )}
         </div>
       </div>
     );
@@ -123,9 +139,11 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>🏆 Sports Quiz 🏆</h1>
-        <p className="subtitle">Test your knowledge of Soccer, Baseball, Basketball, and Football!</p>
-        <div className="difficulty-badge">
-          {selectedDifficulty?.charAt(0).toUpperCase() + selectedDifficulty?.slice(1)}
+        <p className="subtitle">Test your knowledge of various sports!</p>
+        <div className="quiz-info">
+          <div className="difficulty-badge">
+            {selectedDifficulty?.charAt(0).toUpperCase() + selectedDifficulty?.slice(1)}
+          </div>
         </div>
         {error && (
           <p className="error-notice">{error}</p>
