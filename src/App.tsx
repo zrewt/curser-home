@@ -19,15 +19,18 @@ function App() {
       setLoading(true);
       setError(null);
       const data = await api.getQuestions(5, difficulty);
+      if (!data || data.length === 0) {
+        setError('No questions available for this difficulty. Please try another difficulty.');
+        setSelectedDifficulty(null);
+        return;
+      }
       setQuestions(data);
       setSelectedDifficulty(difficulty);
-      if (data.length > 0) {
-        const answers = [
-          data[0].correct_answer,
-          ...data[0].incorrect_answers
-        ].sort(() => Math.random() - 0.5);
-        setShuffledAnswers(answers);
-      }
+      const answers = [
+        data[0].correct_answer,
+        ...data[0].incorrect_answers
+      ].sort(() => Math.random() - 0.5);
+      setShuffledAnswers(answers);
     } catch (error) {
       console.error('Error fetching questions:', error);
       setError('Failed to fetch questions. Please try again later.');
