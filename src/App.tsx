@@ -103,19 +103,19 @@ function App() {
             <h2>Select Difficulty</h2>
             <div className="difficulty-buttons">
               <button 
-                className="difficulty-button easy"
+                className={`difficulty-button easy ${selectedDifficulty === 'easy' ? 'selected' : ''}`}
                 onClick={() => setSelectedDifficulty('easy')}
               >
                 Easy
               </button>
               <button 
-                className="difficulty-button medium"
+                className={`difficulty-button medium ${selectedDifficulty === 'medium' ? 'selected' : ''}`}
                 onClick={() => setSelectedDifficulty('medium')}
               >
                 Medium
               </button>
               <button 
-                className="difficulty-button hard"
+                className={`difficulty-button hard ${selectedDifficulty === 'hard' ? 'selected' : ''}`}
                 onClick={() => setSelectedDifficulty('hard')}
               >
                 Hard
