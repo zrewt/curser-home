@@ -5,14 +5,33 @@
   color: #2c3e50;
   padding: 20px;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  overflow-y: auto;
-  width: 100%;
+  overflow-y: scroll;
+  width: calc(100% - 20px);
   -webkit-tap-highlight-color: transparent;
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
+}
+
+/* Customize scrollbar */
+.App::-webkit-scrollbar {
+  width: 12px;
+}
+
+.App::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 6px;
+}
+
+.App::-webkit-scrollbar-thumb {
+  background: #1877f2;
+  border-radius: 6px;
+}
+
+.App::-webkit-scrollbar-thumb:hover {
+  background: #166fe5;
 }
 
 .App-header {
@@ -80,7 +99,7 @@
 
 .difficulty-button.medium {
   background-color: #FFC107;
-  color: #000;
+  color: white;
 }
 
 .difficulty-button.hard {
