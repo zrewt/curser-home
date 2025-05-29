@@ -48,6 +48,10 @@
   margin-bottom: 1.5rem;
   width: 100%;
   box-sizing: border-box;
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .App-header h1 {
