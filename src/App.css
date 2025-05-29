@@ -16,20 +16,24 @@
 }
 
 .App-header {
+  background: linear-gradient(135deg, #1877f2 0%, #166fe5 100%);
+  padding: 2rem 1rem;
+  color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   margin-bottom: 2rem;
 }
 
 .App-header h1 {
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
-  color: #1877f2;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .subtitle {
   font-size: 1.2rem;
-  color: #666;
-  margin-bottom: 2rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 0;
 }
 
 .selection-container {
@@ -90,9 +94,9 @@
 }
 
 .difficulty-button.selected {
-  border: 3px solid #1877f2;
+  border: 3px solid #000;
   transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(24, 119, 242, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .start-quiz-button {
