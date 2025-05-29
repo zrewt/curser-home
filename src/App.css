@@ -1,8 +1,8 @@
 .App {
   text-align: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-  color: white;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+  color: #2c3e50;
   padding: 20px;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   overflow: hidden;
@@ -22,13 +22,13 @@
 .App-header h1 {
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
-  color: #ffffff;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  color: #1877f2;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .subtitle {
   font-size: 1.2rem;
-  color: #b3b3b3;
+  color: #666;
   margin-bottom: 2rem;
 }
 
@@ -36,10 +36,9 @@
   max-width: 600px;
   margin: 0 auto;
   padding: 2rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: white;
   border-radius: 15px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
 }
 
 .difficulty-selection {
@@ -49,7 +48,7 @@
 .difficulty-selection h2 {
   font-size: 1.8rem;
   margin-bottom: 1.5rem;
-  color: #ffffff;
+  color: #1877f2;
 }
 
 .difficulty-buttons {
@@ -91,13 +90,13 @@
 }
 
 .difficulty-button.selected {
-  border: 3px solid #000;
+  border: 3px solid #1877f2;
   transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(24, 119, 242, 0.3);
 }
 
 .start-quiz-button {
-  background-color: #2196F3;
+  background: linear-gradient(135deg, #1877f2 0%, #166fe5 100%);
   color: white;
   padding: 1rem 2.5rem;
   font-size: 1.2rem;
@@ -107,13 +106,12 @@
   transition: all 0.3s ease;
   font-weight: 600;
   margin-top: 1rem;
-  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+  box-shadow: 0 4px 12px rgba(24, 119, 242, 0.3);
 }
 
 .start-quiz-button:hover {
-  background-color: #1976D2;
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(33, 150, 243, 0.4);
+  box-shadow: 0 6px 16px rgba(24, 119, 242, 0.4);
 }
 
 .loading {
@@ -128,7 +126,7 @@
   width: 50px;
   height: 50px;
   border: 5px solid #f3f3f3;
-  border-top: 5px solid #3498db;
+  border-top: 5px solid #1877f2;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 1rem;
@@ -140,8 +138,8 @@
 }
 
 .error-notice {
-  color: #ff6b6b;
-  background-color: rgba(255, 107, 107, 0.1);
+  color: #dc2626;
+  background-color: #fee2e2;
   padding: 1rem;
   border-radius: 8px;
   margin: 1rem 0;
@@ -154,26 +152,25 @@
 .difficulty-badge {
   display: inline-block;
   padding: 0.5rem 1rem;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: #e8f0fe;
   border-radius: 20px;
   font-size: 0.9rem;
-  color: #ffffff;
+  color: #1877f2;
 }
 
 .question-section {
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: white;
   border-radius: 15px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
 }
 
 .progress-bar {
   width: 100%;
   height: 8px;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: #e2e8f0;
   border-radius: 4px;
   margin-bottom: 2rem;
   overflow: hidden;
@@ -181,7 +178,7 @@
 
 .progress-fill {
   height: 100%;
-  background-color: #2196F3;
+  background: linear-gradient(90deg, #1877f2 0%, #166fe5 100%);
   transition: width 0.3s ease;
 }
 
@@ -194,17 +191,18 @@
 .answer-button {
   padding: 1rem;
   font-size: 1.1rem;
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 2px solid transparent;
+  background-color: #f8fafc;
+  border: 2px solid #e2e8f0;
   border-radius: 8px;
-  color: white;
+  color: #2c3e50;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .answer-button:hover:not(:disabled) {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: #f1f5f9;
   transform: translateY(-2px);
+  border-color: #1877f2;
 }
 
 .answer-button:disabled {
@@ -215,10 +213,9 @@
 .score-section {
   text-align: center;
   padding: 2rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: white;
   border-radius: 15px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
   max-width: 600px;
   margin: 0 auto;
 }
@@ -226,18 +223,18 @@
 .score-section h2 {
   font-size: 2rem;
   margin-bottom: 1rem;
-  color: #ffffff;
+  color: #1877f2;
 }
 
 .score-percentage {
   font-size: 3rem;
   font-weight: bold;
-  color: #2196F3;
+  color: #1877f2;
   margin: 1rem 0;
 }
 
 .score-section button {
-  background-color: #2196F3;
+  background: linear-gradient(135deg, #1877f2 0%, #166fe5 100%);
   color: white;
   padding: 1rem 2rem;
   font-size: 1.2rem;
@@ -249,8 +246,8 @@
 }
 
 .score-section button:hover {
-  background-color: #1976D2;
   transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(24, 119, 242, 0.3);
 }
 
 @media (max-width: 768px) {
