@@ -13,20 +13,12 @@ export const api = {
       const response = await fetch(
         `${API_BASE_URL}/questions?count=${count}&difficulty=${difficulty}&_t=${timestamp}`
       );
-      
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to fetch questions');
+        throw new Error('Failed to fetch questions');
       }
-      
-      const data = await response.json();
-      if (!Array.isArray(data) || data.length === 0) {
-        throw new Error('No questions available');
-      }
-      
-      return data;
+      return await response.json();
     } catch (error) {
-      console.error('API Error:', error);
+      console.error('Error fetching questions:', error);
       throw error;
     }
   }
