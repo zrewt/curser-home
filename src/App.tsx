@@ -94,7 +94,7 @@ function App() {
     return (
       <div className="App">
         <header className="App-header">
-          <h1>🏆 Sports Quiz 🏆</h1>
+          <h1>🏆 Daily Sports Quiz 🏆</h1>
           <p className="subtitle">Test your knowledge of various sports!</p>
         </header>
         <div className="selection-container">
