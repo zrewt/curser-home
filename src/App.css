@@ -316,14 +316,7 @@
   }
 }
 
-/* Add safe area insets for modern mobile browsers */
-@supports (padding: max(0px)) {
-  .App {
-    padding-left: max(0.5rem, env(safe-area-inset-left));
-    padding-right: max(0.5rem, env(safe-area-inset-right));
-    padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
-  }
-}
+
 
 .sport-selection {
   margin-top: 2rem;
