@@ -3,6 +3,8 @@ import './App.css';
 import { Question, Difficulty } from './types';
 import { api } from './services/api';
 
+type Sport = 'basketball' | 'football' | 'baseball' | 'hockey' | 'soccer' | 'all';
+
 function App() {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -11,22 +13,25 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty | null>(null);
+  const [selectedSport, setSelectedSport] = useState<Sport | null>(null);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [shuffledAnswers, setShuffledAnswers] = useState<string[]>([]);
 
-  const fetchQuestions = async (difficulty: Difficulty) => {
+  const fetchQuestions = async (difficulty: Difficulty, sport: Sport) => {
     try {
       setLoading(true);
       setError(null);
-      const data = await api.getQuestions(5, difficulty);
+      const data = await api.getQuestions(5, difficulty, sport);
       
       if (!data || data.length === 0) {
         setError('No questions available. Please try again.');
         setSelectedDifficulty(null);
+        setSelectedSport(null);
         return;
       }
       setQuestions(data);
       setSelectedDifficulty(difficulty);
+      setSelectedSport(sport);
       setCurrentQuestion(0);
       setScore(0);
       setShowScore(false);
@@ -41,6 +46,7 @@ function App() {
       console.error('Error fetching questions:', error);
       setError('Failed to fetch questions. Please try again later.');
       setSelectedDifficulty(null);
+      setSelectedSport(null);
     } finally {
       setLoading(false);
     }
@@ -74,6 +80,7 @@ function App() {
     setScore(0);
     setShowScore(false);
     setSelectedDifficulty(null);
+    setSelectedSport(null);
     setSelectedAnswer(null);
     setQuestions([]);
     setShuffledAnswers([]);
@@ -90,7 +97,7 @@ function App() {
     );
   }
 
-  if (!selectedDifficulty || questions.length === 0) {
+  if (!selectedDifficulty || !selectedSport || questions.length === 0) {
     return (
       <div className="App">
         <header className="App-header">
@@ -121,10 +128,51 @@ function App() {
               </button>
             </div>
           </div>
-          {selectedDifficulty && (
+          <div className="sport-selection">
+            <h2>Select Sport</h2>
+            <div className="sport-buttons">
+              <button 
+                className={`sport-button ${selectedSport === 'basketball' ? 'selected' : ''}`}
+                onClick={() => setSelectedSport('basketball')}
+              >
+                🏀 Basketball
+              </button>
+              <button 
+                className={`sport-button ${selectedSport === 'football' ? 'selected' : ''}`}
+                onClick={() => setSelectedSport('football')}
+              >
+                🏈 Football
+              </button>
+              <button 
+                className={`sport-button ${selectedSport === 'baseball' ? 'selected' : ''}`}
+                onClick={() => setSelectedSport('baseball')}
+              >
+                ⚾ Baseball
+              </button>
+              <button 
+                className={`sport-button ${selectedSport === 'hockey' ? 'selected' : ''}`}
+                onClick={() => setSelectedSport('hockey')}
+              >
+                🏒 Hockey
+              </button>
+              <button 
+                className={`sport-button ${selectedSport === 'soccer' ? 'selected' : ''}`}
+                onClick={() => setSelectedSport('soccer')}
+              >
+                ⚽ Soccer
+              </button>
+              <button 
+                className={`sport-button ${selectedSport === 'all' ? 'selected' : ''}`}
+                onClick={() => setSelectedSport('all')}
+              >
+                🏆 All Sports
+              </button>
+            </div>
+          </div>
+          {selectedDifficulty && selectedSport && (
             <button 
               className="start-quiz-button"
-              onClick={() => fetchQuestions(selectedDifficulty)}
+              onClick={() => fetchQuestions(selectedDifficulty, selectedSport)}
             >
               Start Quiz
             </button>
@@ -142,6 +190,9 @@ function App() {
         <div className="quiz-info">
           <div className="difficulty-badge">
             {selectedDifficulty?.charAt(0).toUpperCase() + selectedDifficulty?.slice(1)}
+          </div>
+          <div className="sport-badge">
+            {selectedSport === 'all' ? 'All Sports' : selectedSport.charAt(0).toUpperCase() + selectedSport.slice(1)}
           </div>
         </div>
         {error && (

@@ -324,3 +324,49 @@
     padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
   }
 }
+
+.sport-selection {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.sport-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+  padding: 0 1rem;
+}
+
+.sport-button {
+  padding: 1rem;
+  font-size: 1.1rem;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  background-color: #f0f2f5;
+  color: #1c1e21;
+}
+
+.sport-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.sport-button.selected {
+  border: 3px solid #1877f2;
+  background-color: #e7f3ff;
+  transform: scale(1.05);
+}
+
+.sport-badge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background-color: #e8f0fe;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  color: #1877f2;
+  margin-left: 1rem;
+}
