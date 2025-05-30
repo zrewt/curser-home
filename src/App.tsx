@@ -25,7 +25,6 @@ function App() {
         setSelectedDifficulty(null);
         return;
       }
-
       setQuestions(data);
       setSelectedDifficulty(difficulty);
       setCurrentQuestion(0);
