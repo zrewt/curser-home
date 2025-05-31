@@ -294,25 +294,113 @@
 
 @media (max-width: 768px) {
   .App {
-    padding: 10px;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  .App-header {
+    padding: 0.75rem;
   }
 
   .App-header h1 {
-    font-size: 2rem;
+    font-size: 1.5rem;
+    margin-bottom: 0.15rem;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+  }
+
+  .selection-container {
+    padding: 1rem;
+    margin: 1rem;
+    width: auto;
+  }
+
+  .difficulty-selection h2 {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
   }
 
   .difficulty-buttons {
-    flex-direction: column;
-    align-items: center;
+    gap: 0.5rem;
   }
 
   .difficulty-button {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    min-width: 100px;
+  }
+
+  .question-section {
+    margin: 1rem;
+    padding: 1rem;
+  }
+
+  .question-section h2 {
+    font-size: 1.2rem;
+  }
+
+  .answer-buttons {
+    gap: 0.5rem;
+  }
+
+  .answer-button {
+    padding: 0.7rem;
+    font-size: 0.95rem;
+  }
+
+  .start-quiz-button {
+    padding: 0.8rem 2rem;
+    font-size: 1.1rem;
     width: 100%;
     max-width: 300px;
   }
 
-  .question-section {
+  .score-section {
     padding: 1rem;
+    margin: 1rem;
+  }
+
+  .score-section h2 {
+    font-size: 1.4rem;
+  }
+
+  .score-percentage {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .App-header h1 {
+    font-size: 1.3rem;
+  }
+
+  .subtitle {
+    font-size: 0.8rem;
+  }
+
+  .difficulty-button {
+    padding: 0.7rem 1.2rem;
+    font-size: 0.9rem;
+    min-width: 90px;
+  }
+
+  .question-section h2 {
+    font-size: 1.1rem;
+  }
+
+  .answer-button {
+    padding: 0.6rem;
+    font-size: 0.9rem;
+  }
+
+  .score-section h2 {
+    font-size: 1.2rem;
+  }
+
+  .score-percentage {
+    font-size: 1.8rem;
   }
 }
 
