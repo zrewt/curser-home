@@ -9,6 +9,7 @@
   width: 100%;
   -webkit-tap-highlight-color: transparent;
   position: relative;
+  padding-bottom: 100px;
   top: 0;
   left: 0;
   right: 0;
@@ -75,7 +76,7 @@
   border-radius: 15px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   margin-top: 2rem;
-  margin-bottom: 2rem;
+  margin-bottom: 4rem;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -301,7 +302,9 @@
 
 @media (max-width: 768px) {
   .App {
-    padding-bottom: 2rem;
+    padding-bottom: 120px;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
   }
 
   .App-header {
@@ -321,7 +324,7 @@
     padding: 1rem;
     margin: 1rem;
     width: auto;
-    margin-bottom: 2rem;
+    margin-bottom: 4rem;
   }
 
   .difficulty-selection h2 {
@@ -362,7 +365,7 @@
     font-size: 1.1rem;
     width: 90%;
     max-width: 300px;
-    margin: 2rem auto;
+    margin: 2rem auto 4rem auto;
     position: relative;
   }
 
@@ -382,7 +385,7 @@
   .sport-buttons {
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 0.8rem;
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
   }
 
   .sport-button {
