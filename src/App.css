@@ -141,8 +141,11 @@
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 600;
-  margin-top: 1rem;
+  margin: 1rem auto;
   box-shadow: 0 4px 12px rgba(24, 119, 242, 0.3);
+  display: block;
+  width: 100%;
+  max-width: 300px;
 }
 
 .start-quiz-button:hover {
@@ -317,6 +320,7 @@
     padding: 1rem;
     margin: 1rem;
     width: auto;
+    padding-bottom: 4rem;
   }
 
   .difficulty-selection h2 {
@@ -355,8 +359,11 @@
   .start-quiz-button {
     padding: 0.8rem 2rem;
     font-size: 1.1rem;
-    width: 100%;
+    width: 90%;
     max-width: 300px;
+    margin: 1rem auto;
+    position: relative;
+    z-index: 10;
   }
 
   .score-section {
