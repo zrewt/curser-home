@@ -101,7 +101,7 @@ function App() {
     return (
       <div className="App">
         <header className="App-header">
-          <h1>🏆 Score-Trrivia 🏆</h1>
+          <h1>🏆 Score-Trivia 🏆</h1>
           <p className="subtitle">Test your knowledge of various sports!</p>
         </header>
         <div className="selection-container">
