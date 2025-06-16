@@ -2,19 +2,24 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/logo.png" />
+    
+    <!-- ✅ Favicon -->
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <link rel="apple-touch-icon" href="/logo192.png" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Play Score-Trivia: Test your sports knowledge with our engaging quiz platform. Free sports trivia games, real-time scoring, and competitive leaderboards. Join now!"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <title>Score Trivia - Play Free Sports Quiz Games</title>
+    
+    <!-- ✅ Description (keep only one) -->
     <meta name="description" content="Think you're the ultimate sports fan? Play free trivia games for football, soccer, basketball, hockey & more. Compete with friends at ScoreTrivia.com!" />
 
-    <!-- ✅ Google Analytics START -->
+    <!-- ✅ Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- ✅ Title -->
+    <title>Score Trivia - Play Free Sports Quiz Games</title>
+
+    <!-- ✅ Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-9V3068DXEX"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -22,7 +27,21 @@
       gtag('js', new Date());
       gtag('config', 'G-9V3068DXEX');
     </script>
-    <!-- ✅ Google Analytics END -->
+
+    <!-- ✅ Schema Markup to help Google recognize your site and favicon -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Score Trivia",
+      "url": "https://scoretrivia.com/",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://scoretrivia.com/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
