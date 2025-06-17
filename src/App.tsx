@@ -86,6 +86,21 @@ function App() {
     setShuffledAnswers([]);
   };
 
+  const copyResultsToClipboard = () => {
+    if (!selectedSport || !selectedDifficulty) return;
+    
+    const resultText = `🏆 Sports Quiz Results 🏆\n\nSport: ${selectedSport === 'all' ? 'All Sports' : selectedSport.charAt(0).toUpperCase() + selectedSport.slice(1)}\nDifficulty: ${selectedDifficulty.charAt(0).toUpperCase() + selectedDifficulty.slice(1)}\nScore: ${score} out of ${questions.length} (${Math.round((score / questions.length) * 100)}%)`;
+    
+    navigator.clipboard.writeText(resultText)
+      .then(() => {
+        alert('Results copied to clipboard!');
+      })
+      .catch((err) => {
+        console.error('Failed to copy results:', err);
+        alert('Failed to copy results. Please try again.');
+      });
+  };
+
   if (loading) {
     return (
       <div className="App">
@@ -207,7 +222,12 @@ function App() {
             <p className="score-percentage">
               {Math.round((score / questions.length) * 100)}%
             </p>
-            <button onClick={resetQuiz}>Try Another Quiz</button>
+            <div className="score-buttons">
+              <button onClick={resetQuiz}>Try Another Quiz</button>
+              <button onClick={copyResultsToClipboard} className="share-button">
+                Share Results 📋
+              </button>
+            </div>
           </div>
         ) : (
           <div className="question-section">
