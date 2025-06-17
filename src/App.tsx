@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import { Question, Difficulty } from './types';
 import { api } from './services/api';
@@ -16,6 +16,16 @@ function App() {
   const [selectedSport, setSelectedSport] = useState<Sport | null>(null);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [shuffledAnswers, setShuffledAnswers] = useState<string[]>([]);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (toastMessage) {
+      const timer = setTimeout(() => {
+        setToastMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [toastMessage]);
 
   const fetchQuestions = async (difficulty: Difficulty, sport: Sport) => {
     try {
@@ -93,11 +103,11 @@ function App() {
     
     navigator.clipboard.writeText(resultText)
       .then(() => {
-        alert('Results copied to clipboard!');
+        setToastMessage('Results copied to clipboard!');
       })
       .catch((err) => {
         console.error('Failed to copy results:', err);
-        alert('Failed to copy results. Please try again.');
+        setToastMessage('Failed to copy results. Please try again.');
       });
   };
 
@@ -254,6 +264,11 @@ function App() {
           </div>
         )}
       </main>
+      {toastMessage && (
+        <div className="toast">
+          {toastMessage}
+        </div>
+      )}
     </div>
   );
 }
