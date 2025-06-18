@@ -168,11 +168,12 @@ code {
 }
 
 /* --- Nickname Modal Styles --- */
+/* --- Updated Nickname Modal Styles --- */
 .nickname-modal .modal-box {
-  background: #101522;
+  background: #ffffff;
   border: 2.5px solid #1877f2;
-  color: #fff;
-  box-shadow: 0 8px 32px rgba(24,119,242,0.25), 0 2px 8px rgba(0,0,0,0.25);
+  color: #111;
+  box-shadow: 0 8px 32px rgba(24, 119, 242, 0.15), 0 2px 8px rgba(0, 0, 0, 0.1);
   border-radius: 18px;
   padding: 2.5rem 2rem 2rem 2rem;
   min-width: 340px;
@@ -181,7 +182,7 @@ code {
 }
 
 .nickname-modal .modal-box h2 {
-  color: #1877f2;
+  color: #111;
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 1.2rem;
@@ -192,25 +193,25 @@ code {
   width: 90%;
   padding: 0.85rem;
   margin-bottom: 1.5rem;
-  border: 2px solid #222c3a;
+  border: 2px solid #ccc;
   border-radius: 8px;
   font-size: 1.15rem;
-  background: #181c2a;
-  color: #fff;
+  background: #f9f9f9;
+  color: #111;
   outline: none;
   transition: border 0.2s, box-shadow 0.2s;
-  box-shadow: 0 2px 8px rgba(24,119,242,0.08);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 .nickname-modal .modal-box input[type='text']:focus {
-  border: 2px solid #1877f2;
-  box-shadow: 0 0 0 2px #1877f2aa;
+  border-color: #1877f2;
+  box-shadow: 0 0 0 2px #1877f233;
 }
 
 .nickname-modal .modal-box button {
   width: 100%;
   padding: 0.85rem;
-  background: linear-gradient(135deg, #1877f2 0%, #101522 100%);
+  background: #1877f2;
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -218,23 +219,23 @@ code {
   font-weight: 700;
   cursor: pointer;
   transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 2px 8px rgba(24,119,242,0.12);
+  box-shadow: 0 2px 8px rgba(24, 119, 242, 0.2);
   margin-top: 0.5rem;
   letter-spacing: 0.5px;
 }
 
 .nickname-modal .modal-box button:hover {
-  background: linear-gradient(135deg, #101522 0%, #1877f2 100%);
+  background: #145dc1;
   transform: translateY(-2px) scale(1.04);
-  box-shadow: 0 4px 16px #1877f2aa;
+  box-shadow: 0 4px 12px rgba(24, 119, 242, 0.3);
 }
 
-/* --- Leaderboard Modal Styles --- */
+/* --- Updated Leaderboard Modal Styles --- */
 .leaderboard-modal .modal-box {
-  background: #101522;
+  background: #ffffff;
   border: 2.5px solid #1877f2;
-  color: #fff;
-  box-shadow: 0 8px 32px rgba(24,119,242,0.25), 0 2px 8px rgba(0,0,0,0.25);
+  color: #111;
+  box-shadow: 0 8px 32px rgba(24, 119, 242, 0.15), 0 2px 8px rgba(0, 0, 0, 0.1);
   border-radius: 18px;
   padding: 2.5rem 2rem 2rem 2rem;
   min-width: 340px;
@@ -243,7 +244,7 @@ code {
 }
 
 .leaderboard-modal .modal-box h2 {
-  color: #1877f2;
+  color: #111;
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 1.2rem;
@@ -259,32 +260,33 @@ code {
 .leaderboard-modal .modal-box li {
   font-size: 1.15rem;
   margin-bottom: 0.5em;
-  color: #fff;
-  background: #181c2a;
+  color: #111;
+  background: #f4f8ff;
   border-radius: 6px;
   padding: 0.4em 0.8em;
   border-left: 4px solid #1877f2;
-  box-shadow: 0 1px 4px rgba(24,119,242,0.08);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .leaderboard-modal .modal-box li:first-child {
-  background: linear-gradient(90deg, #1877f2 60%, #101522 100%);
+  background: linear-gradient(90deg, #1877f2 60%, #ffffff 100%);
   color: #fff;
   font-weight: 700;
-  border-left: 4px solid #fff;
+  border-left: 4px solid #111;
 }
 
 .leaderboard-modal .modal-box .nickname {
   font-weight: 600;
   letter-spacing: 0.5px;
+  color: #1877f2;
 }
 
 .leaderboard-modal .modal-box .score {
   font-size: 1.1em;
-  color: #7ec0fa;
+  color: #111;
   font-weight: 700;
   margin-left: 1em;
 }
@@ -292,7 +294,7 @@ code {
 .leaderboard-modal .modal-box button {
   width: 100%;
   padding: 0.85rem;
-  background: linear-gradient(135deg, #1877f2 0%, #101522 100%);
+  background: #1877f2;
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -300,22 +302,13 @@ code {
   font-weight: 700;
   cursor: pointer;
   transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 2px 8px rgba(24,119,242,0.12);
+  box-shadow: 0 2px 8px rgba(24, 119, 242, 0.2);
   margin-top: 0.5rem;
   letter-spacing: 0.5px;
 }
 
 .leaderboard-modal .modal-box button:hover {
-  background: linear-gradient(135deg, #101522 0%, #1877f2 100%);
+  background: #145dc1;
   transform: translateY(-2px) scale(1.04);
-  box-shadow: 0 4px 16px #1877f2aa;
-}
-
-/* Responsive Modal */
-@media (max-width: 480px) {
-  .nickname-modal .modal-box,
-  .leaderboard-modal .modal-box {
-    min-width: 95vw;
-    padding: 1.2rem 0.5rem 1rem 0.5rem;
-  }
+  box-shadow: 0 4px 12px rgba(24, 119, 242, 0.3);
 }
