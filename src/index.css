@@ -150,3 +150,141 @@ code {
     padding: 1.2rem 0.5rem 1rem 0.5rem;
   }
 }
+
+/* --- Nickname Modal Styles --- */
+.nickname-modal .modal-box {
+  background: #101522;
+  border: 2.5px solid #1877f2;
+  color: #fff;
+  box-shadow: 0 8px 32px rgba(24,119,242,0.25), 0 2px 8px rgba(0,0,0,0.25);
+  border-radius: 18px;
+  padding: 2.5rem 2rem 2rem 2rem;
+  min-width: 340px;
+  max-width: 95vw;
+  text-align: center;
+}
+
+.nickname-modal .modal-box h2 {
+  color: #1877f2;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.2rem;
+  letter-spacing: 1px;
+}
+
+.nickname-modal .modal-box input[type='text'] {
+  width: 90%;
+  padding: 0.85rem;
+  margin-bottom: 1.5rem;
+  border: 2px solid #222c3a;
+  border-radius: 8px;
+  font-size: 1.15rem;
+  background: #181c2a;
+  color: #fff;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(24,119,242,0.08);
+}
+
+.nickname-modal .modal-box input[type='text']:focus {
+  border: 2px solid #1877f2;
+  box-shadow: 0 0 0 2px #1877f2aa;
+}
+
+.nickname-modal .modal-box button {
+  width: 100%;
+  padding: 0.85rem;
+  background: linear-gradient(135deg, #1877f2 0%, #101522 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(24,119,242,0.12);
+  margin-top: 0.5rem;
+  letter-spacing: 0.5px;
+}
+
+.nickname-modal .modal-box button:hover {
+  background: linear-gradient(135deg, #101522 0%, #1877f2 100%);
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 4px 16px #1877f2aa;
+}
+
+/* --- Leaderboard Modal Styles --- */
+.leaderboard-modal .modal-box {
+  background: #101522;
+  border: 2.5px solid #1877f2;
+  color: #fff;
+  box-shadow: 0 8px 32px rgba(24,119,242,0.25), 0 2px 8px rgba(0,0,0,0.25);
+  border-radius: 18px;
+  padding: 2.5rem 2rem 2rem 2rem;
+  min-width: 340px;
+  max-width: 95vw;
+  text-align: center;
+}
+
+.leaderboard-modal .modal-box h2 {
+  color: #1877f2;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.2rem;
+  letter-spacing: 1px;
+}
+
+.leaderboard-modal .modal-box ol {
+  text-align: left;
+  margin: 1.2rem 0 0.5rem 0;
+  padding-left: 1.2em;
+}
+
+.leaderboard-modal .modal-box li {
+  font-size: 1.15rem;
+  margin-bottom: 0.5em;
+  color: #fff;
+  background: #181c2a;
+  border-radius: 6px;
+  padding: 0.4em 0.8em;
+  border-left: 4px solid #1877f2;
+  box-shadow: 0 1px 4px rgba(24,119,242,0.08);
+}
+
+.leaderboard-modal .modal-box li:first-child {
+  background: linear-gradient(90deg, #1877f2 60%, #101522 100%);
+  color: #fff;
+  font-weight: 700;
+  border-left: 4px solid #fff;
+}
+
+.leaderboard-modal .modal-box button {
+  width: 100%;
+  padding: 0.85rem;
+  background: linear-gradient(135deg, #1877f2 0%, #101522 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(24,119,242,0.12);
+  margin-top: 0.5rem;
+  letter-spacing: 0.5px;
+}
+
+.leaderboard-modal .modal-box button:hover {
+  background: linear-gradient(135deg, #101522 0%, #1877f2 100%);
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 4px 16px #1877f2aa;
+}
+
+/* Responsive Modal */
+@media (max-width: 480px) {
+  .nickname-modal .modal-box,
+  .leaderboard-modal .modal-box {
+    min-width: 95vw;
+    padding: 1.2rem 0.5rem 1rem 0.5rem;
+  }
+}
