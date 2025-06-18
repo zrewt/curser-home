@@ -3,6 +3,7 @@ import React from 'react';
 interface LeaderboardEntry {
   nickname: string;
   score: number;
+  difficulty: string;
 }
 
 interface LeaderboardModalProps {
@@ -24,8 +25,11 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({ isOpen, leaderboard
           ) : (
             leaderboard.map((entry, idx) => (
               <li key={idx}>
-    <span className="nickname">{entry.nickname}</span>
-    <span className="score">{entry.score}</span>
+                <div className="entry-info">
+                  <span className="nickname">{entry.nickname}</span>
+                  <span className="difficulty">({entry.difficulty})</span>
+                </div>
+                <span className="score">{entry.score}</span>
               </li>
             ))
           )}
