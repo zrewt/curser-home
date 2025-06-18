@@ -176,6 +176,9 @@ function App() {
       });
   };
 
+  // Check if user is actively taking a quiz (not on selection screen or score screen)
+  const isInQuiz = questions.length > 0 && !showScore && !loading;
+
   // Always show header/navbar
   return (
     <div className="App">
@@ -185,18 +188,17 @@ function App() {
         <button onClick={() => setShowLeaderboard(true)} style={{ position: 'absolute', top: 16, right: 16 }}>
           Leaderboard
         </button>
-        <div className="quiz-info">
-          {selectedDifficulty && (
+        {/* Only show quiz info when actively taking a quiz */}
+        {isInQuiz && selectedDifficulty && selectedSport && (
+          <div className="quiz-info">
             <div className="difficulty-badge">
               {selectedDifficulty.charAt(0).toUpperCase() + selectedDifficulty.slice(1)}
             </div>
-          )}
-          {selectedSport && (
             <div className="sport-badge">
               {selectedSport === 'all' ? 'All Sports' : selectedSport.charAt(0).toUpperCase() + selectedSport.slice(1)}
             </div>
-          )}
-        </div>
+          </div>
+        )}
         {error && (
           <p className="error-notice">{error}</p>
         )}
