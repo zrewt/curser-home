@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import { Question, Difficulty } from './types';
 import { api } from './services/api';
+import NicknameModal from './components/NicknameModal';
+import LeaderboardModal from './components/LeaderboardModal';
 
 type Sport = 'basketball' | 'football' | 'baseball' | 'hockey' | 'soccer' | 'all';
 
@@ -17,6 +19,10 @@ function App() {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [shuffledAnswers, setShuffledAnswers] = useState<string[]>([]);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [nickname, setNickname] = useState<string | null>(null);
+  const [showNicknameModal, setShowNicknameModal] = useState(false);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [leaderboard, setLeaderboard] = useState<{ nickname: string; score: number }[]>([]);
 
   useEffect(() => {
     if (toastMessage) {
@@ -26,6 +32,72 @@ function App() {
       return () => clearTimeout(timer);
     }
   }, [toastMessage]);
+
+  // Helper to get today's date string
+  const getToday = () => new Date().toISOString().slice(0, 10);
+
+  // On mount, check for nickname and leaderboard for today
+  useEffect(() => {
+    const today = getToday();
+    const stored = localStorage.getItem('nickname-info');
+    let showModal = true;
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (parsed.date === today && parsed.nickname) {
+          setNickname(parsed.nickname);
+          showModal = false;
+        }
+      } catch {}
+    }
+    setShowNicknameModal(showModal);
+
+    // Load leaderboard for today
+    const lb = localStorage.getItem('leaderboard-' + today);
+    if (lb) {
+      try {
+        setLeaderboard(JSON.parse(lb));
+      } catch {
+        setLeaderboard([]);
+      }
+    } else {
+      setLeaderboard([]);
+    }
+  }, []);
+
+  // Save nickname to localStorage
+  const handleNicknameSubmit = (nick: string) => {
+    setNickname(nick);
+    setShowNicknameModal(false);
+    localStorage.setItem('nickname-info', JSON.stringify({ nickname: nick, date: getToday() }));
+    // Add to leaderboard if not present
+    setLeaderboard(prev => {
+      if (!prev.some(e => e.nickname === nick)) {
+        const updated = [...prev, { nickname: nick, score: 0 }];
+        localStorage.setItem('leaderboard-' + getToday(), JSON.stringify(updated));
+        return updated;
+      }
+      return prev;
+    });
+  };
+
+  // Update leaderboard when quiz is completed
+  useEffect(() => {
+    if (showScore && nickname) {
+      const today = getToday();
+      setLeaderboard(prev => {
+        let updated = prev.map(e =>
+          e.nickname === nickname && score > e.score ? { ...e, score } : e
+        );
+        // If not present, add
+        if (!updated.some(e => e.nickname === nickname)) {
+          updated = [...updated, { nickname, score }];
+        }
+        localStorage.setItem('leaderboard-' + today, JSON.stringify(updated));
+        return updated;
+      });
+    }
+  }, [showScore, nickname, score]);
 
   const fetchQuestions = async (difficulty: Difficulty, sport: Sport) => {
     try {
@@ -212,12 +284,15 @@ function App() {
       <header className="App-header">
         <h1>🏆 Sports Quiz 🏆</h1>
         <p className="subtitle">Test your knowledge of various sports!</p>
+        <button onClick={() => setShowLeaderboard(true)} style={{ position: 'absolute', top: 16, right: 16 }}>
+          Leaderboard
+        </button>
         <div className="quiz-info">
           <div className="difficulty-badge">
             {selectedDifficulty?.charAt(0).toUpperCase() + selectedDifficulty?.slice(1)}
           </div>
           <div className="sport-badge">
-            {selectedSport === 'all' ? 'All Sports' : selectedSport.charAt(0).toUpperCase() + selectedSport.slice(1)}
+            {selectedSport === 'all' ? 'All Sports' : selectedSport?.charAt(0).toUpperCase() + selectedSport?.slice(1)}
           </div>
         </div>
         {error && (
@@ -269,6 +344,8 @@ function App() {
           {toastMessage}
         </div>
       )}
+      <NicknameModal isOpen={showNicknameModal} onSubmit={handleNicknameSubmit} />
+      <LeaderboardModal isOpen={showLeaderboard} leaderboard={leaderboard.sort((a, b) => b.score - a.score)} onClose={() => setShowLeaderboard(false)} />
     </div>
   );
 }
