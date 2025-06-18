@@ -85,7 +85,7 @@ code {
 }
 
 .modal-box button:hover {
-  background: linear-gradient(135deg, #111 0%, #1877f2 100%);
+  background:  #1877f2;
   transform: translateY(-2px) scale(1.04);
   box-shadow: 0 4px 16px #1877f233;
 }
