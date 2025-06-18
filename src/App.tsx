@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import { Question, Difficulty } from './types';
 import { api } from './services/api';
+import AdBanner from './components/adbanner';
 
 type Sport = 'basketball' | 'football' | 'baseball' | 'hockey' | 'soccer' | 'all';
 
@@ -126,6 +127,7 @@ function App() {
     return (
       <div className="App">
         <header className="App-header">
+        <AdBanner />
           <h1>🏆 Score-Trivia 🏆</h1>
           <p className="subtitle">Test your knowledge of various sports!</p>
         </header>
