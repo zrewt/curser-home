@@ -97,6 +97,19 @@ code {
   padding-left: 1.2em;
 }
 
+.modal-box .entry-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.modal-box .difficulty {
+  font-size: 0.9em;
+  color: #666;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
 .modal-box li {
   font-size: 1.15rem;
   margin-bottom: 0.5em;
