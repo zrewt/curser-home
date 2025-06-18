@@ -24,8 +24,8 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({ isOpen, leaderboard
           ) : (
             leaderboard.map((entry, idx) => (
               <li key={idx}>
-                <span className="nickname">{entry.nickname}</span>
-                <span className="score">{entry.score}</span>
+    <span className="nickname">{entry.nickname}</span>
+    <span className="score">{entry.score}</span>
               </li>
             ))
           )}
