@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 interface LeaderboardEntry {
   nickname: string;
@@ -13,21 +13,48 @@ interface LeaderboardModalProps {
 }
 
 const LeaderboardModal: React.FC<LeaderboardModalProps> = ({ isOpen, leaderboard, onClose }) => {
+  const [activeTab, setActiveTab] = useState<'easy' | 'medium' | 'hard'>('easy');
+
   if (!isOpen) return null;
+
+  // Filter leaderboard by active difficulty
+  const filteredLeaderboard = leaderboard.filter(entry => entry.difficulty === activeTab);
 
   return (
     <div className="modal-overlay leaderboard-modal">
       <div className="modal-box">
         <h2>Leaderboard</h2>
+        
+        {/* Difficulty Tabs */}
+        <div className="difficulty-tabs">
+          <button 
+            className={`tab-button ${activeTab === 'easy' ? 'active' : ''}`}
+            onClick={() => setActiveTab('easy')}
+          >
+            Easy
+          </button>
+          <button 
+            className={`tab-button ${activeTab === 'medium' ? 'active' : ''}`}
+            onClick={() => setActiveTab('medium')}
+          >
+            Medium
+          </button>
+          <button 
+            className={`tab-button ${activeTab === 'hard' ? 'active' : ''}`}
+            onClick={() => setActiveTab('hard')}
+          >
+            Hard
+          </button>
+        </div>
+
         <ol>
-          {leaderboard.length === 0 ? (
-            <li>No entries yet.</li>
+          {filteredLeaderboard.length === 0 ? (
+            <li>No entries yet for {activeTab} difficulty.</li>
           ) : (
-            leaderboard.map((entry, idx) => (
+            filteredLeaderboard.map((entry, idx) => (
               <li key={idx}>
                 <div className="entry-info">
                   <span className="nickname">{entry.nickname}</span>
-                  <span className="difficulty">({entry.difficulty})</span>
                 </div>
                 <span className="score">{entry.score}</span>
               </li>
@@ -40,4 +67,4 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({ isOpen, leaderboard
   );
 };
 
-export default LeaderboardModal; 
+export default LeaderboardModal;

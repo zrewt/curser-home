@@ -71,10 +71,10 @@ function App() {
       const today = getToday();
       setLeaderboard(prev => {
         let updated = prev.map(e =>
-          e.nickname === nickname && score > e.score ? { ...e, score, difficulty: selectedDifficulty } : e
+          e.nickname === nickname && e.difficulty === selectedDifficulty && score > e.score ? { ...e, score } : e
         );
         // If not present, add
-        if (!updated.some(e => e.nickname === nickname)) {
+        if (!updated.some(e => e.nickname === nickname && e.difficulty === selectedDifficulty)) {
           updated = [...updated, { nickname, score, difficulty: selectedDifficulty }];
         }
         localStorage.setItem('leaderboard-' + today, JSON.stringify(updated));
@@ -183,7 +183,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>🏆 Sports Quiz 🏆</h1>
+        <h1>�� Sports Quiz 🏆</h1>
         <p className="subtitle">Test your knowledge of various sports!</p>
         <button onClick={() => setShowLeaderboard(true)} style={{ position: 'absolute', top: 16, right: 16 }}>
           Leaderboard
