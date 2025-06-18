@@ -121,7 +121,7 @@ code {
 .modal-box .nickname {
   font-weight: 600;
   letter-spacing: 0.5px;
-  color: #1877f2;
+  color: #111; /* Changed from blue */
 }
 
 .modal-box .score {
@@ -168,7 +168,6 @@ code {
 }
 
 /* --- Nickname Modal Styles --- */
-/* --- Updated Nickname Modal Styles --- */
 .nickname-modal .modal-box {
   background: #ffffff;
   border: 2.5px solid #1877f2;
@@ -230,7 +229,13 @@ code {
   box-shadow: 0 4px 12px rgba(24, 119, 242, 0.3);
 }
 
-/* --- Updated Leaderboard Modal Styles --- */
+.nickname-modal .modal-box .nickname {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #111;
+}
+
+/* --- Leaderboard Modal Styles --- */
 .leaderboard-modal .modal-box {
   background: #ffffff;
   border: 2.5px solid #1877f2;
@@ -281,7 +286,7 @@ code {
 .leaderboard-modal .modal-box .nickname {
   font-weight: 600;
   letter-spacing: 0.5px;
-  color: #1877f2;
+  color: #111;
 }
 
 .leaderboard-modal .modal-box .score {
@@ -311,4 +316,13 @@ code {
   background: #145dc1;
   transform: translateY(-2px) scale(1.04);
   box-shadow: 0 4px 12px rgba(24, 119, 242, 0.3);
+}
+
+/* Responsive Modal */
+@media (max-width: 480px) {
+  .nickname-modal .modal-box,
+  .leaderboard-modal .modal-box {
+    min-width: 95vw;
+    padding: 1.2rem 0.5rem 1rem 0.5rem;
+  }
 }
