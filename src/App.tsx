@@ -4,8 +4,6 @@ import { Question, Difficulty } from './types';
 import { api } from './services/api';
 import NicknameModal from './components/NicknameModal';
 import LeaderboardModal from './components/LeaderboardModal';
-// In App.tsx, change the leaderboard state type:
-const [leaderboard, setLeaderboard] = useState<{ nickname: string; score: number; difficulty: string }[]>([]);
 
 type Sport = 'basketball' | 'football' | 'baseball' | 'hockey' | 'soccer' | 'all';
 
@@ -32,23 +30,33 @@ function App() {
   const getToday = () => new Date().toISOString().slice(0, 10);
 
   // On mount, check for nickname and leaderboard for today
-// Only add/update leaderboard when quiz is completed
-useEffect(() => {
-  if (showScore && nickname && selectedDifficulty) {
+  useEffect(() => {
     const today = getToday();
-    setLeaderboard(prev => {
-      let updated = prev.map(e =>
-        e.nickname === nickname && score > e.score ? { ...e, score, difficulty: selectedDifficulty } : e
-      );
-      // If not present, add
-      if (!updated.some(e => e.nickname === nickname)) {
-        updated = [...updated, { nickname, score, difficulty: selectedDifficulty }];
+    const stored = localStorage.getItem('nickname-info');
+    let showModal = true;
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (parsed.date === today && parsed.nickname) {
+          setNickname(parsed.nickname);
+          showModal = false;
+        }
+      } catch {}
+    }
+    setShowNicknameModal(showModal);
+
+    // Load leaderboard for today
+    const lb = localStorage.getItem('leaderboard-' + today);
+    if (lb) {
+      try {
+        setLeaderboard(JSON.parse(lb));
+      } catch {
+        setLeaderboard([]);
       }
-      localStorage.setItem('leaderboard-' + today, JSON.stringify(updated));
-      return updated;
-    });
-  }
-}, [showScore, nickname, score, selectedDifficulty]);
+    } else {
+      setLeaderboard([]);
+    }
+  }, []);
 
   // Save nickname to localStorage (do NOT add to leaderboard here)
   const handleNicknameSubmit = (nick: string) => {
