@@ -249,6 +249,9 @@ code {
   padding: 0.4em 0.8em;
   border-left: 4px solid #1877f2;
   box-shadow: 0 1px 4px rgba(24,119,242,0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .leaderboard-modal .modal-box li:first-child {
@@ -256,6 +259,18 @@ code {
   color: #fff;
   font-weight: 700;
   border-left: 4px solid #fff;
+}
+
+.leaderboard-modal .modal-box .nickname {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.leaderboard-modal .modal-box .score {
+  font-size: 1.1em;
+  color: #7ec0fa;
+  font-weight: 700;
+  margin-left: 1em;
 }
 
 .leaderboard-modal .modal-box button {
