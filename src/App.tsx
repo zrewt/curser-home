@@ -19,19 +19,12 @@ function App() {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [shuffledAnswers, setShuffledAnswers] = useState<string[]>([]);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Nickname and leaderboard state
   const [nickname, setNickname] = useState<string | null>(null);
   const [showNicknameModal, setShowNicknameModal] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [leaderboard, setLeaderboard] = useState<{ nickname: string; score: number }[]>([]);
-
-  useEffect(() => {
-    if (toastMessage) {
-      const timer = setTimeout(() => {
-        setToastMessage(null);
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [toastMessage]);
 
   // Helper to get today's date string
   const getToday = () => new Date().toISOString().slice(0, 10);
@@ -65,23 +58,14 @@ function App() {
     }
   }, []);
 
-  // Save nickname to localStorage
+  // Save nickname to localStorage (do NOT add to leaderboard here)
   const handleNicknameSubmit = (nick: string) => {
     setNickname(nick);
     setShowNicknameModal(false);
     localStorage.setItem('nickname-info', JSON.stringify({ nickname: nick, date: getToday() }));
-    // Add to leaderboard if not present
-    setLeaderboard(prev => {
-      if (!prev.some(e => e.nickname === nick)) {
-        const updated = [...prev, { nickname: nick, score: 0 }];
-        localStorage.setItem('leaderboard-' + getToday(), JSON.stringify(updated));
-        return updated;
-      }
-      return prev;
-    });
   };
 
-  // Update leaderboard when quiz is completed
+  // Only add/update leaderboard when quiz is completed
   useEffect(() => {
     if (showScore && nickname) {
       const today = getToday();
@@ -99,12 +83,21 @@ function App() {
     }
   }, [showScore, nickname, score]);
 
+  useEffect(() => {
+    if (toastMessage) {
+      const timer = setTimeout(() => {
+        setToastMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [toastMessage]);
+
   const fetchQuestions = async (difficulty: Difficulty, sport: Sport) => {
     try {
       setLoading(true);
       setError(null);
       const data = await api.getQuestions(5, difficulty, sport);
-      
+
       if (!data || data.length === 0) {
         setError('No questions available. Please try again.');
         setSelectedDifficulty(null);
@@ -117,7 +110,7 @@ function App() {
       setCurrentQuestion(0);
       setScore(0);
       setShowScore(false);
-      
+
       // Set initial shuffled answers
       const answers = [
         data[0].correct_answer,
@@ -136,7 +129,7 @@ function App() {
 
   const handleAnswerClick = (selectedAnswer: string) => {
     setSelectedAnswer(selectedAnswer);
-    
+
     if (questions[currentQuestion]?.correct_answer === selectedAnswer) {
       setScore(score + 1);
     }
@@ -170,9 +163,9 @@ function App() {
 
   const copyResultsToClipboard = () => {
     if (!selectedSport || !selectedDifficulty) return;
-    
+
     const resultText = `🏆 Sports Quiz Results 🏆\n\nSport: ${selectedSport === 'all' ? 'All Sports' : selectedSport.charAt(0).toUpperCase() + selectedSport.slice(1)}\nDifficulty: ${selectedDifficulty.charAt(0).toUpperCase() + selectedDifficulty.slice(1)}\nScore: ${score} out of ${questions.length} (${Math.round((score / questions.length) * 100)}%)`;
-    
+
     navigator.clipboard.writeText(resultText)
       .then(() => {
         setToastMessage('Results copied to clipboard!');
@@ -183,102 +176,7 @@ function App() {
       });
   };
 
-  if (loading) {
-    return (
-      <div className="App">
-        <div className="loading">
-          <div className="loading-spinner"></div>
-          <p>Loading questions...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!selectedDifficulty || !selectedSport || questions.length === 0) {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <h1>🏆 Score-Trivia 🏆</h1>
-          <p className="subtitle">Test your knowledge of various sports!</p>
-        </header>
-        <div className="selection-container">
-          <div className="difficulty-selection">
-            <h2>Select Difficulty</h2>
-            <div className="difficulty-buttons">
-              <button 
-                className={`difficulty-button easy ${selectedDifficulty === 'easy' ? 'selected' : ''}`}
-                onClick={() => setSelectedDifficulty('easy')}
-              >
-                Easy
-              </button>
-              <button 
-                className={`difficulty-button medium ${selectedDifficulty === 'medium' ? 'selected' : ''}`}
-                onClick={() => setSelectedDifficulty('medium')}
-              >
-                Medium
-              </button>
-              <button 
-                className={`difficulty-button hard ${selectedDifficulty === 'hard' ? 'selected' : ''}`}
-                onClick={() => setSelectedDifficulty('hard')}
-              >
-                Hard
-              </button>
-            </div>
-          </div>
-          <div className="sport-selection">
-            <h2>Select Sport</h2>
-            <div className="sport-buttons">
-              <button 
-                className={`sport-button ${selectedSport === 'basketball' ? 'selected' : ''}`}
-                onClick={() => setSelectedSport('basketball')}
-              >
-                🏀 Basketball
-              </button>
-              <button 
-                className={`sport-button ${selectedSport === 'football' ? 'selected' : ''}`}
-                onClick={() => setSelectedSport('football')}
-              >
-                🏈 Football
-              </button>
-              <button 
-                className={`sport-button ${selectedSport === 'baseball' ? 'selected' : ''}`}
-                onClick={() => setSelectedSport('baseball')}
-              >
-                ⚾ Baseball
-              </button>
-              <button 
-                className={`sport-button ${selectedSport === 'hockey' ? 'selected' : ''}`}
-                onClick={() => setSelectedSport('hockey')}
-              >
-                🏒 Hockey
-              </button>
-              <button 
-                className={`sport-button ${selectedSport === 'soccer' ? 'selected' : ''}`}
-                onClick={() => setSelectedSport('soccer')}
-              >
-                ⚽ Soccer
-              </button>
-              <button 
-                className={`sport-button ${selectedSport === 'all' ? 'selected' : ''}`}
-                onClick={() => setSelectedSport('all')}
-              >
-                🏆 All Sports
-              </button>
-            </div>
-          </div>
-          {selectedDifficulty && selectedSport && (
-            <button 
-              className="start-quiz-button"
-              onClick={() => fetchQuestions(selectedDifficulty, selectedSport)}
-            >
-              Start Quiz
-            </button>
-          )}
-        </div>
-      </div>
-    );
-  }
-
+  // Always show header/navbar
   return (
     <div className="App">
       <header className="App-header">
@@ -288,55 +186,143 @@ function App() {
           Leaderboard
         </button>
         <div className="quiz-info">
-          <div className="difficulty-badge">
-            {selectedDifficulty?.charAt(0).toUpperCase() + selectedDifficulty?.slice(1)}
-          </div>
-          <div className="sport-badge">
-            {selectedSport === 'all' ? 'All Sports' : selectedSport?.charAt(0).toUpperCase() + selectedSport?.slice(1)}
-          </div>
+          {selectedDifficulty && (
+            <div className="difficulty-badge">
+              {selectedDifficulty.charAt(0).toUpperCase() + selectedDifficulty.slice(1)}
+            </div>
+          )}
+          {selectedSport && (
+            <div className="sport-badge">
+              {selectedSport === 'all' ? 'All Sports' : selectedSport.charAt(0).toUpperCase() + selectedSport.slice(1)}
+            </div>
+          )}
         </div>
         {error && (
           <p className="error-notice">{error}</p>
         )}
       </header>
       <main className="App-main">
-        {showScore ? (
-          <div className="score-section">
-            <h2>Quiz Complete! 🎉</h2>
-            <p>You scored {score} out of {questions.length}</p>
-            <p className="score-percentage">
-              {Math.round((score / questions.length) * 100)}%
-            </p>
-            <div className="score-buttons">
-              <button onClick={resetQuiz}>Try Another Quiz</button>
-              <button onClick={copyResultsToClipboard} className="share-button">
-                Share Results 📋
-              </button>
+        {loading ? (
+          <div className="loading">
+            <div className="loading-spinner"></div>
+            <p>Loading questions...</p>
+          </div>
+        ) : !selectedDifficulty || !selectedSport || questions.length === 0 ? (
+          <div>
+            <div className="selection-container">
+              <div className="difficulty-selection">
+                <h2>Select Difficulty</h2>
+                <div className="difficulty-buttons">
+                  <button
+                    className={`difficulty-button easy ${selectedDifficulty === 'easy' ? 'selected' : ''}`}
+                    onClick={() => setSelectedDifficulty('easy')}
+                  >
+                    Easy
+                  </button>
+                  <button
+                    className={`difficulty-button medium ${selectedDifficulty === 'medium' ? 'selected' : ''}`}
+                    onClick={() => setSelectedDifficulty('medium')}
+                  >
+                    Medium
+                  </button>
+                  <button
+                    className={`difficulty-button hard ${selectedDifficulty === 'hard' ? 'selected' : ''}`}
+                    onClick={() => setSelectedDifficulty('hard')}
+                  >
+                    Hard
+                  </button>
+                </div>
+              </div>
+              <div className="sport-selection">
+                <h2>Select Sport</h2>
+                <div className="sport-buttons">
+                  <button
+                    className={`sport-button ${selectedSport === 'basketball' ? 'selected' : ''}`}
+                    onClick={() => setSelectedSport('basketball')}
+                  >
+                    🏀 Basketball
+                  </button>
+                  <button
+                    className={`sport-button ${selectedSport === 'football' ? 'selected' : ''}`}
+                    onClick={() => setSelectedSport('football')}
+                  >
+                    🏈 Football
+                  </button>
+                  <button
+                    className={`sport-button ${selectedSport === 'baseball' ? 'selected' : ''}`}
+                    onClick={() => setSelectedSport('baseball')}
+                  >
+                    ⚾ Baseball
+                  </button>
+                  <button
+                    className={`sport-button ${selectedSport === 'hockey' ? 'selected' : ''}`}
+                    onClick={() => setSelectedSport('hockey')}
+                  >
+                    🏒 Hockey
+                  </button>
+                  <button
+                    className={`sport-button ${selectedSport === 'soccer' ? 'selected' : ''}`}
+                    onClick={() => setSelectedSport('soccer')}
+                  >
+                    ⚽ Soccer
+                  </button>
+                  <button
+                    className={`sport-button ${selectedSport === 'all' ? 'selected' : ''}`}
+                    onClick={() => setSelectedSport('all')}
+                  >
+                    🏆 All Sports
+                  </button>
+                </div>
+              </div>
+              {selectedDifficulty && selectedSport && (
+                <button
+                  className="start-quiz-button"
+                  onClick={() => fetchQuestions(selectedDifficulty, selectedSport)}
+                >
+                  Start Quiz
+                </button>
+              )}
             </div>
           </div>
         ) : (
-          <div className="question-section">
-            <div className="progress-bar">
-              <div 
-                className="progress-fill"
-                style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
-              ></div>
-            </div>
-            <h2>Question {currentQuestion + 1} of {questions.length}</h2>
-            <p>{questions[currentQuestion]?.question}</p>
-            <div className="answer-buttons">
-              {shuffledAnswers.map((answer, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleAnswerClick(answer)}
-                  className="answer-button"
-                  disabled={selectedAnswer !== null}
-                >
-                  {answer}
+          showScore ? (
+            <div className="score-section">
+              <h2>Quiz Complete! 🎉</h2>
+              <p>You scored {score} out of {questions.length}</p>
+              <p className="score-percentage">
+                {Math.round((score / questions.length) * 100)}%
+              </p>
+              <div className="score-buttons">
+                <button onClick={resetQuiz}>Try Another Quiz</button>
+                <button onClick={copyResultsToClipboard} className="share-button">
+                  Share Results 📋
                 </button>
-              ))}
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="question-section">
+              <div className="progress-bar">
+                <div
+                  className="progress-fill"
+                  style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
+                ></div>
+              </div>
+              <h2>Question {currentQuestion + 1} of {questions.length}</h2>
+              <p>{questions[currentQuestion]?.question}</p>
+              <div className="answer-buttons">
+                {shuffledAnswers.map((answer, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleAnswerClick(answer)}
+                    className="answer-button"
+                    disabled={selectedAnswer !== null}
+                  >
+                    {answer}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )
         )}
       </main>
       {toastMessage && (
@@ -351,4 +337,3 @@ function App() {
 }
 
 export default App;
-
