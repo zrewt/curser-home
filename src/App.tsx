@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import { Question, Difficulty } from './types';
 import { api } from './services/api';
-import NicknameModal from './components/NicknameModal';
-import LeaderboardModal from './components/LeaderboardModal';
 
 type Sport = 'basketball' | 'football' | 'baseball' | 'hockey' | 'soccer' | 'all';
 
@@ -20,70 +18,7 @@ function App() {
   const [shuffledAnswers, setShuffledAnswers] = useState<string[]>([]);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Nickname and leaderboard state
-  const [nickname, setNickname] = useState<string | null>(null);
-  const [showNicknameModal, setShowNicknameModal] = useState(false);
-  const [showLeaderboard, setShowLeaderboard] = useState(false);
-  const [leaderboard, setLeaderboard] = useState<{ nickname: string; score: number; difficulty: string }[]>([]);
-
-  // Helper to get today's date string
-  const getToday = () => new Date().toISOString().slice(0, 10);
-
-  // On mount, check for nickname and leaderboard for today
-  useEffect(() => {
-    const today = getToday();
-    const stored = localStorage.getItem('nickname-info');
-    let showModal = true;
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        if (parsed.date === today && parsed.nickname) {
-          setNickname(parsed.nickname);
-          showModal = false;
-        }
-      } catch {}
-    }
-    setShowNicknameModal(showModal);
-
-    // Load leaderboard for today
-    const lb = localStorage.getItem('leaderboard-' + today);
-    if (lb) {
-      try {
-        setLeaderboard(JSON.parse(lb));
-      } catch {
-        setLeaderboard([]);
-      }
-    } else {
-      setLeaderboard([]);
-    }
-  }, []);
-
-  // Save nickname to localStorage (do NOT add to leaderboard here)
-  const handleNicknameSubmit = (nick: string) => {
-    setNickname(nick);
-    setShowNicknameModal(false);
-    localStorage.setItem('nickname-info', JSON.stringify({ nickname: nick, date: getToday() }));
-  };
-
-  // Only add/update leaderboard when quiz is completed
-  useEffect(() => {
-    if (showScore && nickname && selectedDifficulty) {
-      const today = getToday();
-      setLeaderboard(prev => {
-        let updated = prev.map(e =>
-          e.nickname === nickname && e.difficulty === selectedDifficulty && score > e.score ? { ...e, score } : e
-        );
-        // If not present, add
-        if (!updated.some(e => e.nickname === nickname && e.difficulty === selectedDifficulty)) {
-          updated = [...updated, { nickname, score, difficulty: selectedDifficulty }];
-        }
-        localStorage.setItem('leaderboard-' + today, JSON.stringify(updated));
-        return updated;
-      });
-    }
-  }, [showScore, nickname, score, selectedDifficulty]);
-
-  useEffect(() => {
+  React.useEffect(() => {
     if (toastMessage) {
       const timer = setTimeout(() => {
         setToastMessage(null);
@@ -185,9 +120,6 @@ function App() {
       <header className="App-header">
         <h1>🏆 Sports Quiz 🏆</h1>
         <p className="subtitle">Test your knowledge of various sports!</p>
-        <button onClick={() => setShowLeaderboard(true)} style={{ position: 'absolute', top: 16, right: 16 }}>
-          Leaderboard
-        </button>
         {/* Only show quiz info when actively taking a quiz */}
         {isInQuiz && selectedDifficulty && selectedSport && (
           <div className="quiz-info">
@@ -332,8 +264,6 @@ function App() {
           {toastMessage}
         </div>
       )}
-      <NicknameModal isOpen={showNicknameModal} onSubmit={handleNicknameSubmit} />
-      <LeaderboardModal isOpen={showLeaderboard} leaderboard={leaderboard.sort((a, b) => b.score - a.score)} onClose={() => setShowLeaderboard(false)} />
     </div>
   );
 }
