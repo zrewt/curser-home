@@ -276,7 +276,7 @@ function App() {
         ) : (
           showScore ? (
             <div className="score-section">
-              <h2>Quiz Complete! ��</h2>
+              <h2>Quiz Complete!</h2>
               <p>You scored {score} out of {questions.length}</p>
               <p className="score-percentage">
                 {Math.round((score / questions.length) * 100)}%
@@ -297,8 +297,10 @@ function App() {
                 ></div>
               </div>
               {/* Timer display */}
-              <div className="timer">
-                Time left: {timer}s
+              <div
+                className={`timer${selectedDifficulty ? ` ${selectedDifficulty}` : ''}${timer <= 3 ? ' low-time' : ''}`}
+              >
+                {timer}s
               </div>
               <h2>Question {currentQuestion + 1} of {questions.length}</h2>
               <p>{questions[currentQuestion]?.question}</p>
