@@ -17,6 +17,8 @@ function App() {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [shuffledAnswers, setShuffledAnswers] = useState<string[]>([]);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [timer, setTimer] = useState<number>(0);
+  const timerRef = React.useRef<NodeJS.Timeout | null>(null);
 
   React.useEffect(() => {
     if (toastMessage) {
@@ -26,6 +28,14 @@ function App() {
       return () => clearTimeout(timer);
     }
   }, [toastMessage]);
+
+  // Helper to get time per question based on difficulty
+  const getTimePerQuestion = (difficulty: Difficulty | null) => {
+    if (difficulty === 'easy') return 15;
+    if (difficulty === 'medium') return 7;
+    if (difficulty === 'hard') return 4;
+    return 0;
+  };
 
   const fetchQuestions = async (difficulty: Difficulty, sport: Sport) => {
     try {
@@ -52,6 +62,7 @@ function App() {
         ...data[0].incorrect_answers
       ].sort(() => Math.random() - 0.5);
       setShuffledAnswers(answers);
+      setTimer(getTimePerQuestion(difficulty)); // Set timer for first question
     } catch (error) {
       console.error('Error fetching questions:', error);
       setError('Failed to fetch questions. Please try again later.');
@@ -64,6 +75,7 @@ function App() {
 
   const handleAnswerClick = (selectedAnswer: string) => {
     setSelectedAnswer(selectedAnswer);
+    if (timerRef.current) clearInterval(timerRef.current);
 
     if (questions[currentQuestion]?.correct_answer === selectedAnswer) {
       setScore(score + 1);
@@ -79,6 +91,7 @@ function App() {
           ...questions[nextQuestion].incorrect_answers
         ].sort(() => Math.random() - 0.5);
         setShuffledAnswers(answers);
+        setTimer(getTimePerQuestion(selectedDifficulty)); // Reset timer for next question
       } else {
         setShowScore(true);
       }
@@ -94,6 +107,8 @@ function App() {
     setSelectedAnswer(null);
     setQuestions([]);
     setShuffledAnswers([]);
+    setTimer(0);
+    if (timerRef.current) clearInterval(timerRef.current);
   };
 
   const copyResultsToClipboard = () => {
@@ -113,6 +128,46 @@ function App() {
 
   // Check if user is actively taking a quiz (not on selection screen or score screen)
   const isInQuiz = questions.length > 0 && !showScore && !loading;
+
+  // Timer effect: runs on question or difficulty change
+  React.useEffect(() => {
+    if (!isInQuiz) {
+      if (timerRef.current) clearInterval(timerRef.current);
+      return;
+    }
+    setTimer(getTimePerQuestion(selectedDifficulty));
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setTimer((prev) => {
+        if (prev <= 1) {
+          if (timerRef.current) clearInterval(timerRef.current);
+          // Time's up, treat as unanswered
+          setSelectedAnswer(''); // Mark as no answer
+          setTimeout(() => {
+            const nextQuestion = currentQuestion + 1;
+            if (nextQuestion < questions.length) {
+              setCurrentQuestion(nextQuestion);
+              setSelectedAnswer(null);
+              const answers = [
+                questions[nextQuestion].correct_answer,
+                ...questions[nextQuestion].incorrect_answers
+              ].sort(() => Math.random() - 0.5);
+              setShuffledAnswers(answers);
+              setTimer(getTimePerQuestion(selectedDifficulty));
+            } else {
+              setShowScore(true);
+            }
+          }, 1000);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentQuestion, isInQuiz, selectedDifficulty]);
 
   // Always show header/navbar
   return (
@@ -221,7 +276,7 @@ function App() {
         ) : (
           showScore ? (
             <div className="score-section">
-              <h2>Quiz Complete! 🎉</h2>
+              <h2>Quiz Complete! ��</h2>
               <p>You scored {score} out of {questions.length}</p>
               <p className="score-percentage">
                 {Math.round((score / questions.length) * 100)}%
@@ -240,6 +295,10 @@ function App() {
                   className="progress-fill"
                   style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
                 ></div>
+              </div>
+              {/* Timer display */}
+              <div className="timer">
+                Time left: {timer}s
               </div>
               <h2>Question {currentQuestion + 1} of {questions.length}</h2>
               <p>{questions[currentQuestion]?.question}</p>
