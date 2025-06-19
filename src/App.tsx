@@ -183,7 +183,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>�� Sports Quiz 🏆</h1>
+        <h1>🏆 Sports Quiz 🏆</h1>
         <p className="subtitle">Test your knowledge of various sports!</p>
         <button onClick={() => setShowLeaderboard(true)} style={{ position: 'absolute', top: 16, right: 16 }}>
           Leaderboard
