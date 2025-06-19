@@ -152,7 +152,7 @@ function App() {
             <div className="sport-selection">
               <h2>Select Sport</h2>
               <div className="sport-buttons">
-                {['basketball', 'football', 'baseball', 'hockey', 'soccer', 'all'].map((s) => (
+                {['🏀 basketball', '🏈 football', '⚾ baseball', '🏒 hockey', '⚽ soccer', '🏆 all'].map((s) => (
                   <button key={s} className={`sport-button ${selectedSport === s ? 'selected' : ''}`} onClick={() => setSelectedSport(s as Sport)}>{s}</button>
                 ))}
               </div>
