@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 import { Question, Difficulty } from './types';
 import { api } from './services/api';
@@ -17,42 +17,45 @@ function App() {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [shuffledAnswers, setShuffledAnswers] = useState<string[]>([]);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-
-  const [timeLeft, setTimeLeft] = useState<number | null>(null);
-  const [timerId, setTimerId] = useState<NodeJS.Timeout | null>(null);
+  const [timer, setTimer] = useState(0);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (toastMessage) {
-      const timer = setTimeout(() => setToastMessage(null), 3000);
+      const timer = setTimeout(() => {
+        setToastMessage(null);
+      }, 3000);
       return () => clearTimeout(timer);
     }
   }, [toastMessage]);
 
   useEffect(() => {
-    if (timeLeft === null || showScore) return;
-    if (timeLeft === 0) {
-      handleAnswerClick('');
-      return;
-    }
-    const id = setTimeout(() => setTimeLeft((prev) => (prev ? prev - 1 : null)), 1000);
-    setTimerId(id);
-    return () => clearTimeout(id);
-  }, [timeLeft]);
+    if (!selectedDifficulty || showScore || selectedAnswer !== null) return;
 
-  const getTimeByDifficulty = (difficulty: Difficulty): number => {
-    switch (difficulty) {
-      case 'easy': return 15;
-      case 'medium': return 7;
-      case 'hard': return 3;
-      default: return 10;
-    }
-  };
+    const duration = selectedDifficulty === 'easy' ? 15 : selectedDifficulty === 'medium' ? 7 : 3;
+    setTimer(duration);
+
+    timerRef.current && clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setTimer(prev => {
+        if (prev <= 1) {
+          clearInterval(timerRef.current!);
+          handleAnswerClick(''); // Empty = skipped
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timerRef.current!);
+  }, [currentQuestion, selectedDifficulty, selectedAnswer, showScore]);
 
   const fetchQuestions = async (difficulty: Difficulty, sport: Sport) => {
     try {
       setLoading(true);
       setError(null);
       const data = await api.getQuestions(5, difficulty, sport);
+
       if (!data || data.length === 0) {
         setError('No questions available. Please try again.');
         setSelectedDifficulty(null);
@@ -66,9 +69,11 @@ function App() {
       setScore(0);
       setShowScore(false);
       setSelectedAnswer(null);
-      const answers = [data[0].correct_answer, ...data[0].incorrect_answers].sort(() => Math.random() - 0.5);
+      const answers = [
+        data[0].correct_answer,
+        ...data[0].incorrect_answers
+      ].sort(() => Math.random() - 0.5);
       setShuffledAnswers(answers);
-      setTimeLeft(getTimeByDifficulty(difficulty));
     } catch (error) {
       console.error('Error fetching questions:', error);
       setError('Failed to fetch questions. Please try again later.');
@@ -79,20 +84,25 @@ function App() {
     }
   };
 
-  const handleAnswerClick = (answer: string) => {
-    setSelectedAnswer(answer);
-    if (questions[currentQuestion]?.correct_answer === answer) {
+  const handleAnswerClick = (selected: string) => {
+    if (selectedAnswer !== null) return;
+    setSelectedAnswer(selected);
+    clearInterval(timerRef.current!);
+
+    if (questions[currentQuestion]?.correct_answer === selected) {
       setScore(score + 1);
     }
-    clearTimeout(timerId!);
+
     setTimeout(() => {
       const next = currentQuestion + 1;
       if (next < questions.length) {
         setCurrentQuestion(next);
         setSelectedAnswer(null);
-        const answers = [questions[next].correct_answer, ...questions[next].incorrect_answers].sort(() => Math.random() - 0.5);
+        const answers = [
+          questions[next].correct_answer,
+          ...questions[next].incorrect_answers
+        ].sort(() => Math.random() - 0.5);
         setShuffledAnswers(answers);
-        setTimeLeft(getTimeByDifficulty(selectedDifficulty!));
       } else {
         setShowScore(true);
       }
@@ -108,14 +118,15 @@ function App() {
     setSelectedAnswer(null);
     setQuestions([]);
     setShuffledAnswers([]);
-    setTimeLeft(null);
-    clearTimeout(timerId!);
+    clearInterval(timerRef.current!);
   };
 
   const copyResultsToClipboard = () => {
     if (!selectedSport || !selectedDifficulty) return;
-    const result = `🏆 Sports Quiz Results 🏆\n\nSport: ${selectedSport === 'all' ? 'All Sports' : selectedSport}\nDifficulty: ${selectedDifficulty}\nScore: ${score} out of ${questions.length} (${Math.round((score / questions.length) * 100)}%)`;
-    navigator.clipboard.writeText(result)
+
+    const resultText = `🏆 Sports Quiz Results 🏆\n\nSport: ${selectedSport === 'all' ? 'All Sports' : selectedSport.charAt(0).toUpperCase() + selectedSport.slice(1)}\nDifficulty: ${selectedDifficulty.charAt(0).toUpperCase() + selectedDifficulty.slice(1)}\nScore: ${score} out of ${questions.length} (${Math.round((score / questions.length) * 100)}%)`;
+
+    navigator.clipboard.writeText(resultText)
       .then(() => setToastMessage('Results copied to clipboard!'))
       .catch(() => setToastMessage('Failed to copy results.'));
   };
@@ -127,11 +138,15 @@ function App() {
       <header className="App-header">
         <h1>🏆 Sports Quiz 🏆</h1>
         <p className="subtitle">Test your knowledge of various sports!</p>
-        {isInQuiz && (
+        {isInQuiz && selectedDifficulty && selectedSport && (
           <div className="quiz-info">
-            <div className="difficulty-badge">{selectedDifficulty}</div>
-            <div className="sport-badge">{selectedSport}</div>
-            <div className="timer">⏳ {timeLeft}s</div>
+            <div className="difficulty-badge">
+              {selectedDifficulty.charAt(0).toUpperCase() + selectedDifficulty.slice(1)}
+            </div>
+            <div className="sport-badge">
+              {selectedSport === 'all' ? 'All Sports' : selectedSport.charAt(0).toUpperCase() + selectedSport.slice(1)}
+            </div>
+            <div className="timer">⏱️ {timer}s</div>
           </div>
         )}
         {error && <p className="error-notice">{error}</p>}
@@ -144,20 +159,22 @@ function App() {
             <div className="difficulty-selection">
               <h2>Select Difficulty</h2>
               <div className="difficulty-buttons">
-                {['easy', 'medium', 'hard'].map((d) => (
-                  <button key={d} className={`difficulty-button ${d} ${selectedDifficulty === d ? 'selected' : ''}`} onClick={() => setSelectedDifficulty(d as Difficulty)}>{d.charAt(0).toUpperCase() + d.slice(1)}</button>
+                {['easy', 'medium', 'hard'].map(d => (
+                  <button key={d} onClick={() => setSelectedDifficulty(d as Difficulty)} className={`difficulty-button ${d} ${selectedDifficulty === d ? 'selected' : ''}`}>{d.charAt(0).toUpperCase() + d.slice(1)}</button>
                 ))}
               </div>
             </div>
             <div className="sport-selection">
               <h2>Select Sport</h2>
               <div className="sport-buttons">
-                {['🏀 basketball', '🏈 football', '⚾ baseball', '🏒 hockey', '⚽ soccer', '🏆 all'].map((s) => (
-                  <button key={s} className={`sport-button ${selectedSport === s ? 'selected' : ''}`} onClick={() => setSelectedSport(s as Sport)}>{s}</button>
+                {['basketball', 'football', 'baseball', 'hockey', 'soccer', 'all'].map(s => (
+                  <button key={s} onClick={() => setSelectedSport(s as Sport)} className={`sport-button ${selectedSport === s ? 'selected' : ''}`}>{s === 'all' ? '🏆 All Sports' : `${s === 'basketball' ? '🏀' : s === 'football' ? '🏈' : s === 'baseball' ? '⚾' : s === 'hockey' ? '🏒' : '⚽'} ${s.charAt(0).toUpperCase() + s.slice(1)}`}</button>
                 ))}
               </div>
             </div>
-            {selectedDifficulty && selectedSport && <button className="start-quiz-button" onClick={() => fetchQuestions(selectedDifficulty, selectedSport)}>Start Quiz</button>}
+            {selectedDifficulty && selectedSport && (
+              <button className="start-quiz-button" onClick={() => fetchQuestions(selectedDifficulty, selectedSport)}>Start Quiz</button>
+            )}
           </div>
         ) : showScore ? (
           <div className="score-section">
