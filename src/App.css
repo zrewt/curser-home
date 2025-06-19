@@ -433,7 +433,7 @@
   background-color: #333;
   color: white;
   padding: 12px 24px;
-  border-radius: 25px;
+  border-radius: 5px;
   font-size: 14px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   animation: slideUp 0.3s ease-out, fadeOut 0.3s ease-out 2.7s;
