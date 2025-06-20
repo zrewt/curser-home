@@ -19,6 +19,7 @@ function App() {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [timer, setTimer] = useState<number>(0);
   const timerRef = React.useRef<NodeJS.Timeout | null>(null);
+  const [numQuestions, setNumQuestions] = useState<number | null>(null);
 
   React.useEffect(() => {
     if (toastMessage) {
@@ -37,11 +38,11 @@ function App() {
     return 0;
   };
 
-  const fetchQuestions = async (difficulty: Difficulty, sport: Sport) => {
+  const fetchQuestions = async (difficulty: Difficulty, sport: Sport, count: number) => {
     try {
       setLoading(true);
       setError(null);
-      const data = await api.getQuestions(5, difficulty, sport);
+      const data = await api.getQuestions(count, difficulty, sport);
 
       if (!data || data.length === 0) {
         setError('No questions available. Please try again.');
@@ -263,10 +264,25 @@ function App() {
                   </button>
                 </div>
               </div>
-              {selectedDifficulty && selectedSport && (
+              <div className="num-questions-selection" style={{ marginTop: '2rem' }}>
+                <h2>Select Number of Questions</h2>
+                <div className="num-questions-buttons" style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+                  {[5, 10, 15].map((n) => (
+                    <button
+                      key={n}
+                      className={`num-questions-button${numQuestions === n ? ' selected' : ''}`}
+                      onClick={() => setNumQuestions(n)}
+                      style={{ padding: '1rem 2rem', fontSize: '1.1rem', borderRadius: '8px', border: numQuestions === n ? '3px solid #1877f2' : '2px solid #e2e8f0', background: numQuestions === n ? '#e7f3ff' : '#f0f2f5', fontWeight: 600, cursor: 'pointer' }}
+                    >
+                      {n}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              {selectedDifficulty && selectedSport && numQuestions && (
                 <button
                   className="start-quiz-button"
-                  onClick={() => fetchQuestions(selectedDifficulty, selectedSport)}
+                  onClick={() => fetchQuestions(selectedDifficulty, selectedSport, numQuestions)}
                 >
                   Start Quiz
                 </button>

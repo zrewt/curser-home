@@ -515,3 +515,38 @@
     font-size: 1.3rem;
   }
 }
+
+.num-questions-selection {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.num-questions-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.num-questions-button {
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  border: 2px solid #e2e8f0;
+  background: #f0f2f5;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #1c1e21;
+}
+
+.num-questions-button.selected {
+  border: 3px solid #1877f2;
+  background-color: #e7f3ff;
+  transform: scale(1.05);
+}
+
+.num-questions-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(24, 119, 242, 0.1);
+}
