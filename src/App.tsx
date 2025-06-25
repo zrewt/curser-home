@@ -162,10 +162,6 @@ function App() {
               setTimer(getTimePerQuestion(selectedDifficulty));
             } else {
               setShowScore(true);
-              // Check for perfect score when timer runs out on last question
-              if (score === questions.length) {
-                setToastMessage('🎉 Perfect Score! Amazing job! You\'re a sports expert! 🏆');
-              }
             }
           }, 1000);
           return 0;
