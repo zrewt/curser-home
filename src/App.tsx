@@ -95,6 +95,11 @@ function App() {
         setTimer(getTimePerQuestion(selectedDifficulty)); // Reset timer for next question
       } else {
         setShowScore(true);
+        // Check for perfect score and show congratulatory toast
+        const finalScore = questions[currentQuestion]?.correct_answer === selectedAnswer ? score + 1 : score;
+        if (finalScore === questions.length) {
+          setToastMessage('🎉 Perfect Score! Amazing job! You\'re a sports expert! 🏆');
+        }
       }
     }, 1000);
   };
@@ -157,6 +162,10 @@ function App() {
               setTimer(getTimePerQuestion(selectedDifficulty));
             } else {
               setShowScore(true);
+              // Check for perfect score when timer runs out on last question
+              if (score === questions.length) {
+                setToastMessage('🎉 Perfect Score! Amazing job! You\'re a sports expert! 🏆');
+              }
             }
           }, 1000);
           return 0;
