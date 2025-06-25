@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import './App.css';
 import { Question, Difficulty } from './types';
 import { api } from './services/api';
-import { SignInButton, UserButton, SignedIn, SignedOut } from "@clerk/clerk-react";
 
 type Sport = 'basketball' | 'football' | 'baseball' | 'hockey' | 'soccer' | 'all';
 
@@ -342,15 +341,6 @@ function App() {
           {toastMessage}
         </div>
       )}
-      <SignedIn>
-        <UserButton />
-        <p>You are signed in!</p>
-      </SignedIn>
-      <SignedOut>
-        <SignInButton mode="modal">
-          <button>Log in / Sign up</button>
-        </SignInButton>
-      </SignedOut>
     </div>
   );
 }
