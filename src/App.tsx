@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './App.css';
 import { Question, Difficulty } from './types';
 import { api } from './services/api';
-import { SignIn, SignUp, UserButton, SignedIn, SignedOut } from "@clerk/clerk-react";
+import { SignInButton, UserButton, SignedIn, SignedOut } from "@clerk/clerk-react";
 
 type Sport = 'basketball' | 'football' | 'baseball' | 'hockey' | 'soccer' | 'all';
 
@@ -347,8 +347,9 @@ function App() {
         <p>You are signed in!</p>
       </SignedIn>
       <SignedOut>
-        <SignIn path="/sign-in" routing="path" />
-        <SignUp path="/sign-up" routing="path" />
+        <SignInButton mode="modal">
+          <button>Log in / Sign up</button>
+        </SignInButton>
       </SignedOut>
     </div>
   );
