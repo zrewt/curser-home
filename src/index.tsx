@@ -10,7 +10,7 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <ClerkProvider publishableKey="pk_test_ZW5nYWdpbmctYW50ZWF0ZXItMTguY2xlcmsuYWNjb3VudHMuZGV2JA">
+    <ClerkProvider publishableKey="sk_test_AO2FWuBLhoin1pQ82ldd5cb0E3gZS1FnLdZP6Swtnn">
       <App />
     </ClerkProvider>
   </React.StrictMode>
