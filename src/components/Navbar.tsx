@@ -10,8 +10,8 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ error, selectedDifficulty, selectedSport, isInQuiz }) => {
   return (
     <header className="App-header">
-      <h1 style={{ fontWeight: 'bold', fontSize: '2.7em' }}>ScoreTrivia</h1>
-      <p className="subtitle" style={{ fontSize: '1.3em', marginTop: '-0.5em', marginBottom: '1em' }}>Sports Quiz</p>
+      <h1 style={{ fontWeight: 'bold', fontSize: '3.5em' }}>ScoreTrivia</h1>
+      <p className="subtitle" style={{ fontSize: '1.7em', marginTop: '-0.5em', marginBottom: '1em' }}>Sports Quizs</p>
       {/* Only show quiz info when actively taking a quiz */}
       {isInQuiz && selectedDifficulty && selectedSport && (
         <div className="quiz-info">
