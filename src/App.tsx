@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './App.css';
 import { Question, Difficulty } from './types';
 import { api } from './services/api';
+import Navbar from './components/Navbar';
 
 type Sport = 'basketball' | 'football' | 'baseball' | 'hockey' | 'soccer' | 'all';
 
@@ -173,24 +174,12 @@ function App() {
   // Always show header/navbar
   return (
     <div className="App">
-      <header className="App-header">
-        <h1>🏆 Sports Quiz 🏆</h1>
-        <p className="subtitle">Test your knowledge of various sports!</p>
-        {/* Only show quiz info when actively taking a quiz */}
-        {isInQuiz && selectedDifficulty && selectedSport && (
-          <div className="quiz-info">
-            <div className="difficulty-badge">
-              {selectedDifficulty.charAt(0).toUpperCase() + selectedDifficulty.slice(1)}
-            </div>
-            <div className="sport-badge">
-              {selectedSport === 'all' ? 'All Sports' : selectedSport.charAt(0).toUpperCase() + selectedSport.slice(1)}
-            </div>
-          </div>
-        )}
-        {error && (
-          <p className="error-notice">{error}</p>
-        )}
-      </header>
+      <Navbar
+        error={error}
+        selectedDifficulty={selectedDifficulty}
+        selectedSport={selectedSport}
+        isInQuiz={isInQuiz}
+      />
       <main className="App-main">
         {loading ? (
           <div className="loading">
