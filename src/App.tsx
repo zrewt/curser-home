@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 import { Question, Difficulty } from './types';
 import { api } from './services/api';
@@ -7,6 +7,8 @@ import Navbar from './components/Navbar';
 type Sport = 'basketball' | 'football' | 'baseball' | 'hockey' | 'soccer' | 'all';
 
 function App() {
+  console.log('App render start');
+
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
@@ -19,10 +21,10 @@ function App() {
   const [shuffledAnswers, setShuffledAnswers] = useState<string[]>([]);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [timer, setTimer] = useState<number>(0);
-  const timerRef = React.useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
   const [numQuestions, setNumQuestions] = useState<number | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (toastMessage) {
       const timer = setTimeout(() => {
         setToastMessage(null);
@@ -31,7 +33,6 @@ function App() {
     }
   }, [toastMessage]);
 
-  // Helper to get time per question based on difficulty
   const getTimePerQuestion = (difficulty: Difficulty | null) => {
     if (difficulty === 'easy') return 15;
     if (difficulty === 'medium') return 7;
@@ -58,13 +59,12 @@ function App() {
       setScore(0);
       setShowScore(false);
 
-      // Set initial shuffled answers
       const answers = [
         data[0].correct_answer,
         ...data[0].incorrect_answers
       ].sort(() => Math.random() - 0.5);
       setShuffledAnswers(answers);
-      setTimer(getTimePerQuestion(difficulty)); // Set timer for first question
+      setTimer(getTimePerQuestion(difficulty));
     } catch (error) {
       console.error('Error fetching questions:', error);
       setError('Failed to fetch questions. Please try again later.');
@@ -93,7 +93,7 @@ function App() {
           ...questions[nextQuestion].incorrect_answers
         ].sort(() => Math.random() - 0.5);
         setShuffledAnswers(answers);
-        setTimer(getTimePerQuestion(selectedDifficulty)); // Reset timer for next question
+        setTimer(getTimePerQuestion(selectedDifficulty));
       } else {
         setShowScore(true);
       }
@@ -128,11 +128,9 @@ function App() {
       });
   };
 
-  // Check if user is actively taking a quiz (not on selection screen or score screen)
   const isInQuiz = questions.length > 0 && !showScore && !loading;
 
-  // Timer effect: runs on question or difficulty change
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isInQuiz) {
       if (timerRef.current) clearInterval(timerRef.current);
       return;
@@ -143,8 +141,7 @@ function App() {
       setTimer((prev) => {
         if (prev <= 1) {
           if (timerRef.current) clearInterval(timerRef.current);
-          // Time's up, treat as unanswered
-          setSelectedAnswer(''); // Mark as no answer
+          setSelectedAnswer('');
           setTimeout(() => {
             const nextQuestion = currentQuestion + 1;
             if (nextQuestion < questions.length) {
@@ -168,10 +165,10 @@ function App() {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentQuestion, isInQuiz, selectedDifficulty]);
 
-  // Always show header/navbar
+  console.log('App render end');
+
   return (
     <div className="App">
       <Navbar
@@ -301,7 +298,6 @@ function App() {
                   style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
                 ></div>
               </div>
-              {/* Timer display */}
               <div
                 className={`timer${selectedDifficulty ? ` ${selectedDifficulty}` : ''}${timer <= 3 ? ' low-time' : ''}`}
               >
