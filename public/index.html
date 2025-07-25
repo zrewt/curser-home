@@ -1,56 +1,50 @@
-<head>
-  <meta charset="utf-8" />
-  
-  <!-- ✅ Favicon -->
-  <link rel="icon" type="image/png" href="/logo.png" />
-  <link rel="apple-touch-icon" href="/logo192.png" />
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    
+    <!-- ✅ Favicon -->
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <link rel="apple-touch-icon" href="/logo192.png" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#000000" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    
+    <!-- ✅ Description -->
+    <meta name="description" content="Think you're the ultimate sports fan? Play this free unlimited trivia games for football, soccer, basketball, hockey & more. Compete with friends at ScoreTrivia.com!" />
 
-  <!-- ✅ Title & Description -->
-  <title>ScoreTrivia – Play Free Sports Quiz Games</title>
-  <meta name="description" content="Think you're the ultimate sports fan? Play unlimited trivia games for football, soccer, basketball, hockey & more. Compete with friends at ScoreTrivia.com!" />
+    <!-- ✅ Manifest -->
+    <link rel="manifest" href="/manifest.json" />
 
-  <!-- ✅ Open Graph (for Facebook, Discord, etc.) -->
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="ScoreTrivia – Sports Quizzes for Real Fans" />
-  <meta property="og:description" content="Test your sports knowledge with free trivia on football, soccer, basketball, and more." />
-  <meta property="og:image" content="https://scoretrivia.com/og-image.png" />
-  <meta property="og:url" content="https://scoretrivia.com/" />
-  <meta property="og:site_name" content="ScoreTrivia" />
+    <!-- ✅ Title -->
+    <title>Score Trivia - Play Free Sports Quiz Games</title>
 
-  <!-- ✅ Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="ScoreTrivia – Sports Quizzes for Real Fans" />
-  <meta name="twitter:description" content="Free sports trivia quizzes for football, soccer, NBA, NHL, and more." />
-  <meta name="twitter:image" content="https://scoretrivia.com/og-image.png" />
-  <meta name="twitter:site" content="@yourhandle" /> <!-- Replace with your X/Twitter handle -->
+    <!-- ✅ Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9V3068DXEX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9V3068DXEX');
+    </script>
 
-  <!-- ✅ Manifest -->
-  <link rel="manifest" href="/manifest.json" />
-
-  <!-- ✅ Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-9V3068DXEX"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-9V3068DXEX');
-  </script>
-
-  <!-- ✅ Schema Markup -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "Score Trivia",
-    "url": "https://scoretrivia.com/",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": "https://scoretrivia.com/?q={search_term_string}",
-      "query-input": "required name=search_term_string"
+    <!-- ✅ Schema Markup -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Score Trivia",
+      "url": "https://scoretrivia.com/",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://scoretrivia.com/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
     }
-  }
-  </script>
-</head>
+    </script>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+  </body>
+</html>
