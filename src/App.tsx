@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import { Question, Difficulty } from './types';
 import { api } from './services/api';
@@ -7,8 +7,6 @@ import Navbar from './components/Navbar';
 type Sport = 'basketball' | 'football' | 'baseball' | 'hockey' | 'soccer' | 'all';
 
 function App() {
-  const [isClient, setIsClient] = useState(false); // Hydration fix
-
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
@@ -21,15 +19,10 @@ function App() {
   const [shuffledAnswers, setShuffledAnswers] = useState<string[]>([]);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [timer, setTimer] = useState<number>(0);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = React.useRef<NodeJS.Timeout | null>(null);
   const [numQuestions, setNumQuestions] = useState<number | null>(null);
 
-  // Hydration fix: mark client after mount
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  useEffect(() => {
+  React.useEffect(() => {
     if (toastMessage) {
       const timer = setTimeout(() => {
         setToastMessage(null);
@@ -65,9 +58,12 @@ function App() {
       setScore(0);
       setShowScore(false);
 
-      // Shuffle answers for first question inside effect, not here
-      shuffleAnswers(data[0]);
-
+      // Set initial shuffled answers
+      const answers = [
+        data[0].correct_answer,
+        ...data[0].incorrect_answers
+      ].sort(() => Math.random() - 0.5);
+      setShuffledAnswers(answers);
       setTimer(getTimePerQuestion(difficulty)); // Set timer for first question
     } catch (error) {
       console.error('Error fetching questions:', error);
@@ -79,20 +75,11 @@ function App() {
     }
   };
 
-  // Shuffle answers helper
-  const shuffleAnswers = (question: Question) => {
-    const answers = [
-      question.correct_answer,
-      ...question.incorrect_answers
-    ].sort(() => Math.random() - 0.5);
-    setShuffledAnswers(answers);
-  };
-
-  const handleAnswerClick = (answer: string) => {
-    setSelectedAnswer(answer);
+  const handleAnswerClick = (selectedAnswer: string) => {
+    setSelectedAnswer(selectedAnswer);
     if (timerRef.current) clearInterval(timerRef.current);
 
-    if (questions[currentQuestion]?.correct_answer === answer) {
+    if (questions[currentQuestion]?.correct_answer === selectedAnswer) {
       setScore(score + 1);
     }
 
@@ -101,7 +88,11 @@ function App() {
       if (nextQuestion < questions.length) {
         setCurrentQuestion(nextQuestion);
         setSelectedAnswer(null);
-        shuffleAnswers(questions[nextQuestion]);
+        const answers = [
+          questions[nextQuestion].correct_answer,
+          ...questions[nextQuestion].incorrect_answers
+        ].sort(() => Math.random() - 0.5);
+        setShuffledAnswers(answers);
         setTimer(getTimePerQuestion(selectedDifficulty)); // Reset timer for next question
       } else {
         setShowScore(true);
@@ -137,9 +128,11 @@ function App() {
       });
   };
 
+  // Check if user is actively taking a quiz (not on selection screen or score screen)
   const isInQuiz = questions.length > 0 && !showScore && !loading;
 
-  useEffect(() => {
+  // Timer effect: runs on question or difficulty change
+  React.useEffect(() => {
     if (!isInQuiz) {
       if (timerRef.current) clearInterval(timerRef.current);
       return;
@@ -150,13 +143,18 @@ function App() {
       setTimer((prev) => {
         if (prev <= 1) {
           if (timerRef.current) clearInterval(timerRef.current);
+          // Time's up, treat as unanswered
           setSelectedAnswer(''); // Mark as no answer
           setTimeout(() => {
             const nextQuestion = currentQuestion + 1;
             if (nextQuestion < questions.length) {
               setCurrentQuestion(nextQuestion);
               setSelectedAnswer(null);
-              shuffleAnswers(questions[nextQuestion]);
+              const answers = [
+                questions[nextQuestion].correct_answer,
+                ...questions[nextQuestion].incorrect_answers
+              ].sort(() => Math.random() - 0.5);
+              setShuffledAnswers(answers);
               setTimer(getTimePerQuestion(selectedDifficulty));
             } else {
               setShowScore(true);
@@ -173,11 +171,7 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentQuestion, isInQuiz, selectedDifficulty]);
 
-  if (!isClient) {
-    // Avoid rendering anything before client-side hydration to prevent hydration mismatch
-    return <div>Loading...</div>;
-  }
-
+  // Always show header/navbar
   return (
     <div className="App">
       <Navbar
