@@ -11,7 +11,6 @@ const Navbar: React.FC<NavbarProps> = ({ error, selectedDifficulty, selectedSpor
   return (
     <header className="App-header">
       <div className="logo-container">
-        <img src="/logo.png" alt="Score Trivia Logo" className="logo-image" />
         <h1 style={{ fontWeight: 'bold', fontSize: '3.5em' }}>ScoreTrivia</h1>
       </div>
       <p className="subtitle" style={{ fontSize: '1.7em', marginTop: '-0.5em', marginBottom: '1em' }}>Unlimited Sports Quizzes</p>
