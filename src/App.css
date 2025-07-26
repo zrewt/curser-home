@@ -613,3 +613,19 @@
   border: 1px solid #e0e0e0;
   cursor: not-allowed;
 }
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 10px;
+}
+
+.logo-image {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
