@@ -229,11 +229,11 @@ function App() {
       />
       <main className="App-main">
         <div style={{ display: 'flex', justifyContent: 'center', margin: '20px 0' }}>
-          <button onClick={fetchDailyQuiz} disabled={loading} style={{ marginRight: 10 }}>
+          <button onClick={fetchDailyQuiz} disabled={loading} className="daily-quiz-btn">
             Daily Quiz (5 Hard Sports Questions)
           </button>
         </div>
-        {isDailyQuiz && <h2 style={{ textAlign: 'center', color: '#1976d2' }}>Daily Quiz</h2>}
+        {isDailyQuiz && <h2 className="daily-quiz-heading">Daily Quiz</h2>}
         {loading ? (
           <div className="loading">
             <div className="loading-spinner"></div>
@@ -347,7 +347,7 @@ function App() {
               </div>
             </div>
           ) : (
-            <div className="question-section">
+            <div className="quiz-card">
               <div className="progress-bar">
                 <div
                   className="progress-fill"
