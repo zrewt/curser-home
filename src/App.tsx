@@ -23,6 +23,8 @@ function App() {
   const [timer, setTimer] = useState<number>(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const [numQuestions, setNumQuestions] = useState<number | null>(null);
+  const [isDailyQuiz, setIsDailyQuiz] = useState(false);
+  const [lastDailyQuizDate, setLastDailyQuizDate] = useState<string | null>(null);
 
   useEffect(() => {
     if (toastMessage) {
@@ -167,6 +169,54 @@ function App() {
     };
   }, [currentQuestion, isInQuiz, selectedDifficulty]);
 
+  // Helper to get today's date string
+  const getTodayString = () => {
+    const now = new Date();
+    return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
+  };
+
+  // Fetch daily quiz
+  const fetchDailyQuiz = async () => {
+    setLoading(true);
+    setError(null);
+    setIsDailyQuiz(true);
+    try {
+      const data = await api.getDailyQuiz();
+      setQuestions(data);
+      setSelectedDifficulty('hard');
+      setSelectedSport('all');
+      setCurrentQuestion(0);
+      setScore(0);
+      setShowScore(false);
+      setIsDailyQuiz(true);
+      setLastDailyQuizDate(getTodayString());
+      const answers = [
+        data[0].correct_answer,
+        ...data[0].incorrect_answers
+      ].sort(() => Math.random() - 0.5);
+      setShuffledAnswers(answers);
+      setTimer(getTimePerQuestion('hard'));
+    } catch (error) {
+      setError('Failed to fetch daily quiz. Please try again later.');
+      setIsDailyQuiz(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Refetch daily quiz at midnight
+  useEffect(() => {
+    if (isDailyQuiz) {
+      const interval = setInterval(() => {
+        const today = getTodayString();
+        if (lastDailyQuizDate && lastDailyQuizDate !== today) {
+          fetchDailyQuiz();
+        }
+      }, 60 * 1000); // check every minute
+      return () => clearInterval(interval);
+    }
+  }, [isDailyQuiz, lastDailyQuizDate]);
+
   console.log('App render end');
 
   return (
@@ -178,6 +228,12 @@ function App() {
         isInQuiz={isInQuiz}
       />
       <main className="App-main">
+        <div style={{ display: 'flex', justifyContent: 'center', margin: '20px 0' }}>
+          <button onClick={fetchDailyQuiz} disabled={loading} style={{ marginRight: 10 }}>
+            Daily Quiz (5 Hard Sports Questions)
+          </button>
+        </div>
+        {isDailyQuiz && <h2 style={{ textAlign: 'center', color: '#1976d2' }}>Daily Quiz</h2>}
         {loading ? (
           <div className="loading">
             <div className="loading-spinner"></div>

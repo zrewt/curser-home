@@ -23,5 +23,17 @@ export const api = {
       console.error('Error fetching questions:', error);
       throw error;
     }
-  }
+  },
+  async getDailyQuiz(): Promise<Question[]> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/daily-quiz`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch daily quiz');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching daily quiz:', error);
+      throw error;
+    }
+  },
 };
