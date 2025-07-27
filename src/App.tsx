@@ -183,7 +183,7 @@ function App() {
     try {
       const data = await api.getDailyQuiz();
       setQuestions(data);
-      setSelectedDifficulty('hard');
+      setSelectedDifficulty('medium');
       setSelectedSport('all');
       setCurrentQuestion(0);
       setScore(0);
@@ -195,7 +195,7 @@ function App() {
         ...data[0].incorrect_answers
       ].sort(() => Math.random() - 0.5);
       setShuffledAnswers(answers);
-      setTimer(getTimePerQuestion('hard'));
+      setTimer(getTimePerQuestion('medium'));
     } catch (error) {
       setError('Failed to fetch daily quiz. Please try again later.');
       setIsDailyQuiz(false);
@@ -230,7 +230,7 @@ function App() {
       <main className="App-main">
         <div style={{ display: 'flex', justifyContent: 'center', margin: '20px 0' }}>
           <button onClick={fetchDailyQuiz} disabled={loading} className="daily-quiz-btn">
-            Daily Quiz (5 Hard Sports Questions)
+            Daily Quiz (5 Medium Sports Questions)
           </button>
         </div>
         {isDailyQuiz && <h2 className="daily-quiz-heading">Daily Quiz</h2>}
