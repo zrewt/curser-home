@@ -195,7 +195,7 @@ function App() {
         ...data[0].incorrect_answers
       ].sort(() => Math.random() - 0.5);
       setShuffledAnswers(answers);
-      setTimer(getTimePerQuestion('medium'));
+      setTimer(getTimePerQuestion('easy'));
     } catch (error) {
       setError('Failed to fetch daily quiz. Please try again later.');
       setIsDailyQuiz(false);
@@ -231,7 +231,7 @@ function App() {
         {(!selectedDifficulty || !selectedSport || questions.length === 0) && (
           <div style={{ display: 'flex', justifyContent: 'center', margin: '20px 0' }}>
             <button onClick={fetchDailyQuiz} disabled={loading} className="daily-quiz-btn">
-              Daily Quiz (5 Medium Sports Questions)
+              Daily Quiz (5 Easy Sports Questions)
             </button>
           </div>
         )}
