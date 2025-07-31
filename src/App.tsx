@@ -228,11 +228,13 @@ function App() {
         isInQuiz={isInQuiz}
       />
       <main className="App-main">
-        <div style={{ display: 'flex', justifyContent: 'center', margin: '20px 0' }}>
-          <button onClick={fetchDailyQuiz} disabled={loading} className="daily-quiz-btn">
-            Daily Quiz (5 Medium Sports Questions)
-          </button>
-        </div>
+        {(!selectedDifficulty || !selectedSport || questions.length === 0) && (
+          <div style={{ display: 'flex', justifyContent: 'center', margin: '20px 0' }}>
+            <button onClick={fetchDailyQuiz} disabled={loading} className="daily-quiz-btn">
+              Daily Quiz (5 Medium Sports Questions)
+            </button>
+          </div>
+        )}
         {isDailyQuiz && <h2 className="daily-quiz-heading">Daily Quiz</h2>}
         {loading ? (
           <div className="loading">
