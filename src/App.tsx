@@ -183,7 +183,7 @@ function App() {
     try {
       const data = await api.getDailyQuiz();
       setQuestions(data);
-      setSelectedDifficulty('medium');
+      setSelectedDifficulty('easy');
       setSelectedSport('all');
       setCurrentQuestion(0);
       setScore(0);
