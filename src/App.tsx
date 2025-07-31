@@ -1,8 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 import { Question, Difficulty } from './types';
 import { api } from './services/api';
 import Navbar from './components/Navbar';
+import QuizSelection from './components/QuizSelection';
+import QuizTaking from './components/QuizTaking';
+import QuizRoute from './components/QuizRoute';
 
 type Sport = 'basketball' | 'football' | 'baseball' | 'hockey' | 'soccer' | 'all';
 
@@ -22,7 +26,6 @@ function App() {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [timer, setTimer] = useState<number>(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const [numQuestions, setNumQuestions] = useState<number | null>(null);
   const [isDailyQuiz, setIsDailyQuiz] = useState(false);
   const [lastDailyQuizDate, setLastDailyQuizDate] = useState<string | null>(null);
 
@@ -220,171 +223,70 @@ function App() {
   console.log('App render end');
 
   return (
-    <div className="App">
-      <Navbar
-        error={error}
-        selectedDifficulty={selectedDifficulty}
-        selectedSport={selectedSport}
-        isInQuiz={isInQuiz}
-      />
-      <main className="App-main">
-        {(!selectedDifficulty || !selectedSport || questions.length === 0) && (
-          <div style={{ display: 'flex', justifyContent: 'center', margin: '20px 0' }}>
-            <button onClick={fetchDailyQuiz} disabled={loading} className="daily-quiz-btn">
-              Daily Quiz (5 Medium Sports Questions)
-            </button>
+    <Router>
+      <div className="App">
+        <Navbar
+          error={error}
+          selectedDifficulty={selectedDifficulty}
+          selectedSport={selectedSport}
+          isInQuiz={isInQuiz}
+        />
+        <main className="App-main">
+          <Routes>
+            <Route 
+              path="/" 
+              element={
+                <QuizSelection
+                  onStartQuiz={fetchQuestions}
+                  onDailyQuiz={fetchDailyQuiz}
+                  loading={loading}
+                />
+              } 
+            />
+            <Route 
+              path="/quiz" 
+              element={
+                questions.length > 0 ? (
+                  <QuizTaking
+                    questions={questions}
+                    currentQuestion={currentQuestion}
+                    score={score}
+                    showScore={showScore}
+                    selectedAnswer={selectedAnswer}
+                    shuffledAnswers={shuffledAnswers}
+                    timer={timer}
+                    selectedDifficulty={selectedDifficulty}
+                    selectedSport={selectedSport}
+                    isDailyQuiz={isDailyQuiz}
+                    onAnswerClick={handleAnswerClick}
+                    onResetQuiz={resetQuiz}
+                    onCopyResults={copyResultsToClipboard}
+                  />
+                ) : (
+                  <Navigate to="/" replace />
+                )
+              } 
+            />
+            <Route 
+              path="/:difficulty-:sport" 
+              element={
+                <QuizRoute
+                  onStartQuiz={fetchQuestions}
+                  onDailyQuiz={fetchDailyQuiz}
+                  loading={loading}
+                />
+              } 
+            />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </main>
+        {toastMessage && (
+          <div className="toast">
+            {toastMessage}
           </div>
         )}
-        {isDailyQuiz && <h2 className="daily-quiz-heading">Daily Quiz</h2>}
-        {loading ? (
-          <div className="loading">
-            <div className="loading-spinner"></div>
-            <p>Loading questions...</p>
-          </div>
-        ) : !selectedDifficulty || !selectedSport || questions.length === 0 ? (
-          <div>
-            <div className="selection-container">
-              <div className="difficulty-selection">
-                <h2>Select Difficulty</h2>
-                <div className="difficulty-buttons">
-                  <button
-                    className={`difficulty-button easy ${selectedDifficulty === 'easy' ? 'selected' : ''}`}
-                    onClick={() => setSelectedDifficulty('easy')}
-                  >
-                    Easy
-                  </button>
-                  <button
-                    className={`difficulty-button medium ${selectedDifficulty === 'medium' ? 'selected' : ''}`}
-                    onClick={() => setSelectedDifficulty('medium')}
-                  >
-                    Medium
-                  </button>
-                  <button
-                    className={`difficulty-button hard ${selectedDifficulty === 'hard' ? 'selected' : ''}`}
-                    onClick={() => setSelectedDifficulty('hard')}
-                  >
-                    Hard
-                  </button>
-                </div>
-              </div>
-              <div className="sport-selection">
-                <h2>Select Sport</h2>
-                <div className="sport-buttons">
-                  <button
-                    className={`sport-button ${selectedSport === 'basketball' ? 'selected' : ''}`}
-                    onClick={() => setSelectedSport('basketball')}
-                  >
-                    🏀 Basketball
-                  </button>
-                  <button
-                    className={`sport-button ${selectedSport === 'football' ? 'selected' : ''}`}
-                    onClick={() => setSelectedSport('football')}
-                  >
-                    🏈 Football
-                  </button>
-                  <button
-                    className={`sport-button ${selectedSport === 'baseball' ? 'selected' : ''}`}
-                    onClick={() => setSelectedSport('baseball')}
-                  >
-                    ⚾ Baseball
-                  </button>
-                  <button
-                    className={`sport-button ${selectedSport === 'hockey' ? 'selected' : ''}`}
-                    onClick={() => setSelectedSport('hockey')}
-                  >
-                    🏒 Hockey
-                  </button>
-                  <button
-                    className={`sport-button ${selectedSport === 'soccer' ? 'selected' : ''}`}
-                    onClick={() => setSelectedSport('soccer')}
-                  >
-                    ⚽ Soccer
-                  </button>
-                  <button
-                    className={`sport-button ${selectedSport === 'all' ? 'selected' : ''}`}
-                    onClick={() => setSelectedSport('all')}
-                  >
-                    🏆 All Sports
-                  </button>
-                </div>
-              </div>
-              <div className="num-questions-selection" style={{ marginTop: '2rem' }}>
-                <h2>Select Number of Questions</h2>
-                <div className="num-questions-buttons" style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-                  {[5, 10, 15].map((n) => (
-                    <button
-                      key={n}
-                      className={`num-questions-button${numQuestions === n ? ' selected' : ''}`}
-                      onClick={() => setNumQuestions(n)}
-                      style={{ padding: '1rem 2rem', fontSize: '1.1rem', borderRadius: '8px', border: numQuestions === n ? '3px solid #1877f2' : '2px solid #e2e8f0', background: numQuestions === n ? '#e7f3ff' : '#f0f2f5', fontWeight: 600, cursor: 'pointer' }}
-                    >
-                      {n}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              {selectedDifficulty && selectedSport && numQuestions && (
-                <button
-                  className="start-quiz-button"
-                  onClick={() => fetchQuestions(selectedDifficulty, selectedSport, numQuestions)}
-                >
-                  Start Quiz
-                </button>
-              )}
-            </div>
-          </div>
-        ) : (
-          showScore ? (
-            <div className="score-section">
-              <h2>Quiz Complete!</h2>
-              <p>You scored {score} out of {questions.length}</p>
-              <p className="score-percentage">
-                {Math.round((score / questions.length) * 100)}%
-              </p>
-              <div className="score-buttons">
-                <button onClick={resetQuiz}>Try Another Quiz</button>
-                <button onClick={copyResultsToClipboard} className="share-button">
-                  Copy Results 📋
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div className="quiz-card">
-              <div className="progress-bar">
-                <div
-                  className="progress-fill"
-                  style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
-                ></div>
-              </div>
-              <div
-                className={`timer${selectedDifficulty ? ` ${selectedDifficulty}` : ''}${timer <= 3 ? ' low-time' : ''}`}
-              >
-                {timer}s
-              </div>
-              <h2>Question {currentQuestion + 1} of {questions.length}</h2>
-              <p>{questions[currentQuestion]?.question}</p>
-              <div className="answer-buttons">
-                {shuffledAnswers.map((answer, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handleAnswerClick(answer)}
-                    className="answer-button"
-                    disabled={selectedAnswer !== null}
-                  >
-                    {answer}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )
-        )}
-      </main>
-      {toastMessage && (
-        <div className="toast">
-          {toastMessage}
-        </div>
-      )}
-    </div>
+      </div>
+    </Router>
   );
 }
 
