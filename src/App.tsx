@@ -235,7 +235,6 @@ function App() {
             </button>
           </div>
         )}
-        {isDailyQuiz && <h2 className="daily-quiz-heading">Daily Quiz</h2>}
         {loading ? (
           <div className="loading">
             <div className="loading-spinner"></div>
