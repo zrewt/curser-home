@@ -172,7 +172,8 @@ function App() {
   // Helper to get today's date string
   const getTodayString = () => {
     const now = new Date();
-    return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
+    // Use UTC to match backend and ensure consistent reset time
+    return `${now.getUTCFullYear()}-${now.getUTCMonth() + 1}-${now.getUTCDate()}`;
   };
 
   // Fetch daily quiz
@@ -189,7 +190,9 @@ function App() {
       setScore(0);
       setShowScore(false);
       setIsDailyQuiz(true);
-      setLastDailyQuizDate(getTodayString());
+      const todayString = getTodayString();
+      setLastDailyQuizDate(todayString);
+      console.log('Daily quiz fetched for date:', todayString);
       const answers = [
         data[0].correct_answer,
         ...data[0].incorrect_answers
@@ -204,18 +207,49 @@ function App() {
     }
   };
 
-  // Refetch daily quiz at midnight
+  // Refetch daily quiz at midnight (12 AM UTC)
   useEffect(() => {
     if (isDailyQuiz) {
+      // Calculate time until next midnight UTC
+      const now = new Date();
+      const tomorrow = new Date(now);
+      tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
+      tomorrow.setUTCHours(0, 0, 0, 0);
+      const timeUntilMidnight = tomorrow.getTime() - now.getTime();
+      
+      // Set up interval to check every 30 seconds, but also set a timeout for exact midnight
       const interval = setInterval(() => {
         const today = getTodayString();
         if (lastDailyQuizDate && lastDailyQuizDate !== today) {
+          console.log('Daily quiz reset detected via interval. Old date:', lastDailyQuizDate, 'New date:', today);
           fetchDailyQuiz();
         }
-      }, 60 * 1000); // check every minute
-      return () => clearInterval(interval);
+      }, 30 * 1000); // check every 30 seconds for more responsive reset
+      
+      // Set timeout for exact midnight reset
+      const midnightTimeout = setTimeout(() => {
+        const today = getTodayString();
+        if (lastDailyQuizDate && lastDailyQuizDate !== today) {
+          console.log('Daily quiz reset detected via midnight timeout. Old date:', lastDailyQuizDate, 'New date:', today);
+          fetchDailyQuiz();
+        }
+      }, timeUntilMidnight);
+      
+      return () => {
+        clearInterval(interval);
+        clearTimeout(midnightTimeout);
+      };
     }
   }, [isDailyQuiz, lastDailyQuizDate]);
+
+  // Check if daily quiz should be fetched on app load
+  useEffect(() => {
+    const today = getTodayString();
+    if (lastDailyQuizDate && lastDailyQuizDate !== today) {
+      // If the stored date is different from today, fetch new daily quiz
+      fetchDailyQuiz();
+    }
+  }, []); // Only run on mount
 
   console.log('App render end');
 
