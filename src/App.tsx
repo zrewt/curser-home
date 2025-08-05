@@ -173,7 +173,13 @@ function App() {
   const getTodayString = () => {
     const now = new Date();
     // Use UTC to match backend and ensure consistent reset time
-    return `${now.getUTCFullYear()}-${now.getUTCMonth() + 1}-${now.getUTCDate()}`;
+    // Reset at 1 AM UTC instead of 12 AM
+    let resetDate = new Date(now);
+    if (now.getUTCHours() < 1) {
+      // Before 1 AM, use yesterday's date
+      resetDate.setUTCDate(resetDate.getUTCDate() - 1);
+    }
+    return `${resetDate.getUTCFullYear()}-${resetDate.getUTCMonth() + 1}-${resetDate.getUTCDate()}`;
   };
 
   // Fetch daily quiz
@@ -210,14 +216,14 @@ function App() {
   // Refetch daily quiz at midnight (12 AM UTC)
   useEffect(() => {
     if (isDailyQuiz) {
-      // Calculate time until next midnight UTC
+      // Calculate time until next 1 AM UTC
       const now = new Date();
       const tomorrow = new Date(now);
       tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
-      tomorrow.setUTCHours(0, 0, 0, 0);
-      const timeUntilMidnight = tomorrow.getTime() - now.getTime();
+      tomorrow.setUTCHours(1, 0, 0, 0); // Set to 1 AM UTC instead of 0 AM
+      const timeUntilReset = tomorrow.getTime() - now.getTime();
       
-      // Set up interval to check every 30 seconds, but also set a timeout for exact midnight
+      // Set up interval to check every 30 seconds, but also set a timeout for exact 1 AM reset
       const interval = setInterval(() => {
         const today = getTodayString();
         if (lastDailyQuizDate && lastDailyQuizDate !== today) {
@@ -226,18 +232,18 @@ function App() {
         }
       }, 30 * 1000); // check every 30 seconds for more responsive reset
       
-      // Set timeout for exact midnight reset
-      const midnightTimeout = setTimeout(() => {
+      // Set timeout for exact 1 AM reset
+      const resetTimeout = setTimeout(() => {
         const today = getTodayString();
         if (lastDailyQuizDate && lastDailyQuizDate !== today) {
-          console.log('Daily quiz reset detected via midnight timeout. Old date:', lastDailyQuizDate, 'New date:', today);
+          console.log('Daily quiz reset detected via 1 AM timeout. Old date:', lastDailyQuizDate, 'New date:', today);
           fetchDailyQuiz();
         }
-      }, timeUntilMidnight);
+      }, timeUntilReset);
       
       return () => {
         clearInterval(interval);
-        clearTimeout(midnightTimeout);
+        clearTimeout(resetTimeout);
       };
     }
   }, [isDailyQuiz, lastDailyQuizDate]);
