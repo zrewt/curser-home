@@ -24,7 +24,11 @@ function App() {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const [numQuestions, setNumQuestions] = useState<number | null>(null);
   const [isDailyQuiz, setIsDailyQuiz] = useState(false);
-  const [lastDailyQuizDate, setLastDailyQuizDate] = useState<string | null>(null);
+  const [lastDailyQuizDate, setLastDailyQuizDate] = useState<string | null>(() => {
+    // Initialize from localStorage if available
+    const stored = localStorage.getItem('lastDailyQuizDate');
+    return stored || null;
+  });
 
   useEffect(() => {
     if (toastMessage) {
@@ -198,6 +202,7 @@ function App() {
       setIsDailyQuiz(true);
       const todayString = getTodayString();
       setLastDailyQuizDate(todayString);
+      localStorage.setItem('lastDailyQuizDate', todayString);
       console.log('Daily quiz fetched for date:', todayString);
       const answers = [
         data[0].correct_answer,
@@ -228,6 +233,7 @@ function App() {
         const today = getTodayString();
         if (lastDailyQuizDate && lastDailyQuizDate !== today) {
           console.log('Daily quiz reset detected via interval. Old date:', lastDailyQuizDate, 'New date:', today);
+          localStorage.removeItem('lastDailyQuizDate'); // Clear stored date
           fetchDailyQuiz();
         }
       }, 30 * 1000); // check every 30 seconds for more responsive reset
@@ -237,6 +243,7 @@ function App() {
         const today = getTodayString();
         if (lastDailyQuizDate && lastDailyQuizDate !== today) {
           console.log('Daily quiz reset detected via 1 AM timeout. Old date:', lastDailyQuizDate, 'New date:', today);
+          localStorage.removeItem('lastDailyQuizDate'); // Clear stored date
           fetchDailyQuiz();
         }
       }, timeUntilReset);
@@ -251,8 +258,17 @@ function App() {
   // Check if daily quiz should be fetched on app load
   useEffect(() => {
     const today = getTodayString();
-    if (lastDailyQuizDate && lastDailyQuizDate !== today) {
+    const storedDate = localStorage.getItem('lastDailyQuizDate');
+    
+    console.log('App initialization - Today:', today, 'Stored date:', storedDate);
+    
+    if (storedDate && storedDate !== today) {
       // If the stored date is different from today, fetch new daily quiz
+      console.log('Date changed, fetching new daily quiz');
+      fetchDailyQuiz();
+    } else if (!storedDate) {
+      // If no stored date, fetch daily quiz for today
+      console.log('No stored date, fetching daily quiz for today');
       fetchDailyQuiz();
     }
   }, []); // Only run on mount
