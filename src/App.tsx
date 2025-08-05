@@ -256,22 +256,23 @@ function App() {
   }, [isDailyQuiz, lastDailyQuizDate]);
 
   // Check if daily quiz should be fetched on app load
-  useEffect(() => {
-    const today = getTodayString();
-    const storedDate = localStorage.getItem('lastDailyQuizDate');
-    
-    console.log('App initialization - Today:', today, 'Stored date:', storedDate);
-    
-    if (storedDate && storedDate !== today) {
-      // If the stored date is different from today, fetch new daily quiz
-      console.log('Date changed, fetching new daily quiz');
-      fetchDailyQuiz();
-    } else if (!storedDate) {
-      // If no stored date, fetch daily quiz for today
-      console.log('No stored date, fetching daily quiz for today');
-      fetchDailyQuiz();
-    }
-  }, []); // Only run on mount
+  // Removed automatic daily quiz fetching - now app starts with home screen
+  // useEffect(() => {
+  //   const today = getTodayString();
+  //   const storedDate = localStorage.getItem('lastDailyQuizDate');
+  //   
+  //   console.log('App initialization - Today:', today, 'Stored date:', storedDate);
+  //   
+  //   if (storedDate && storedDate !== today) {
+  //     // If the stored date is different from today, fetch new daily quiz
+  //     console.log('Date changed, fetching new daily quiz');
+  //     fetchDailyQuiz();
+  //   } else if (!storedDate) {
+  //     // If no stored date, fetch daily quiz for today
+  //     console.log('No stored date, fetching daily quiz for today');
+  //     fetchDailyQuiz();
+  //   }
+  // }, []); // Only run on mount
 
   console.log('App render end');
 
