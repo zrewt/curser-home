@@ -1,27 +1,30 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
+import { Question, Difficulty } from './types';
 import { api } from './services/api';
 import Navbar from './components/Navbar';
+
+type Sport = 'basketball' | 'football' | 'baseball' | 'hockey' | 'soccer' | 'all';
 
 function App() {
   console.log('App render start');
 
-  const [questions, setQuestions] = useState([]);
+  const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
   const [showScore, setShowScore] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [selectedDifficulty, setSelectedDifficulty] = useState(null);
-  const [selectedSport, setSelectedSport] = useState(null);
-  const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [shuffledAnswers, setShuffledAnswers] = useState([]);
-  const [toastMessage, setToastMessage] = useState(null);
-  const [timer, setTimer] = useState(0);
-  const timerRef = useRef(null);
-  const [numQuestions, setNumQuestions] = useState(null);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty | null>(null);
+  const [selectedSport, setSelectedSport] = useState<Sport | null>(null);
+  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+  const [shuffledAnswers, setShuffledAnswers] = useState<string[]>([]);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [timer, setTimer] = useState<number>(0);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const [numQuestions, setNumQuestions] = useState<number | null>(null);
   const [isDailyQuiz, setIsDailyQuiz] = useState(false);
-  const [lastDailyQuizDate, setLastDailyQuizDate] = useState(() => {
+  const [lastDailyQuizDate, setLastDailyQuizDate] = useState<string | null>(() => {
     // Initialize from localStorage if available
     const stored = localStorage.getItem('lastDailyQuizDate');
     return stored || null;
@@ -36,14 +39,14 @@ function App() {
     }
   }, [toastMessage]);
 
-  const getTimePerQuestion = (difficulty) => {
+  const getTimePerQuestion = (difficulty: Difficulty | null) => {
     if (difficulty === 'easy') return 15;
     if (difficulty === 'medium') return 7;
     if (difficulty === 'hard') return 4;
     return 0;
   };
 
-  const fetchQuestions = async (difficulty, sport, count) => {
+  const fetchQuestions = async (difficulty: Difficulty, sport: Sport, count: number) => {
     try {
       setLoading(true);
       setError(null);
@@ -78,7 +81,7 @@ function App() {
     }
   };
 
-  const handleAnswerClick = (selectedAnswer) => {
+  const handleAnswerClick = (selectedAnswer: string) => {
     setSelectedAnswer(selectedAnswer);
     if (timerRef.current) clearInterval(timerRef.current);
 
@@ -252,6 +255,25 @@ function App() {
     }
   }, [isDailyQuiz, lastDailyQuizDate]);
 
+  // Check if daily quiz should be fetched on app load
+  // Removed automatic daily quiz fetching - now app starts with home screen
+  // useEffect(() => {
+  //   const today = getTodayString();
+  //   const storedDate = localStorage.getItem('lastDailyQuizDate');
+  //   
+  //   console.log('App initialization - Today:', today, 'Stored date:', storedDate);
+  //   
+  //   if (storedDate && storedDate !== today) {
+  //     // If the stored date is different from today, fetch new daily quiz
+  //     console.log('Date changed, fetching new daily quiz');
+  //     fetchDailyQuiz();
+  //   } else if (!storedDate) {
+  //     // If no stored date, fetch daily quiz for today
+  //     console.log('No stored date, fetching daily quiz for today');
+  //     fetchDailyQuiz();
+  //   }
+  // }, []); // Only run on mount
+
   console.log('App render end');
 
   return (
@@ -370,7 +392,7 @@ function App() {
         ) : (
           showScore ? (
             <div className="score-section">
-              <h2>Quiz Complete!</h2>
+              <h2>Quiz Complete</h2>
               <p>You scored {score} out of {questions.length}</p>
               <p className="score-percentage">
                 {Math.round((score / questions.length) * 100)}%
