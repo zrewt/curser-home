@@ -1,6 +1,4 @@
-// src/api/index.ts or similar
-
-import { Question, Difficulty } from '../types';
+// src/api/index.js or similar
 
 // Hardcoded deployed backend URL
 const API_BASE_URL = 'https://backend-triv.onrender.com/api';
@@ -10,10 +8,8 @@ const LOCAL_API_BASE_URL = 'http://localhost:3001/api';
 const isLocal = window.location.hostname === 'localhost';
 const BASE_URL = isLocal ? LOCAL_API_BASE_URL : API_BASE_URL;
 
-type Sport = 'basketball' | 'football' | 'baseball' | 'hockey' | 'soccer' | 'all';
-
 export const api = {
-  async getQuestions(count: number = 5, difficulty: Difficulty = 'medium', sport: Sport = 'all'): Promise<Question[]> {
+  async getQuestions(count = 5, difficulty = 'medium', sport = 'all') {
     try {
       // Add timestamp to prevent caching and ensure fresh random questions
       const timestamp = new Date().getTime();
@@ -29,7 +25,7 @@ export const api = {
       throw error;
     }
   },
-  async getDailyQuiz(): Promise<Question[]> {
+  async getDailyQuiz() {
     try {
       const response = await fetch(`${BASE_URL}/daily-quiz`);
       if (!response.ok) {

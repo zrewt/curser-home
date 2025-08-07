@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
-import { api } from './services/api';
+import { api } from './services/api.js';
 import Navbar from './components/Navbar';
 
 function App() {
