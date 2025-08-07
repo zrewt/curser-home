@@ -3,6 +3,7 @@ import './App.css';
 import { Question, Difficulty } from './types';
 import { api } from './services/api';
 import Navbar from './components/Navbar';
+import ConsentBanner from './components/ConsentBanner';
 
 type Sport = 'basketball' | 'football' | 'baseball' | 'hockey' | 'soccer' | 'all';
 
@@ -440,6 +441,7 @@ function App() {
           {toastMessage}
         </div>
       )}
+      <ConsentBanner />
     </div>
   );
 }
