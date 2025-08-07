@@ -362,7 +362,7 @@ function App() {
                   className="start-quiz-button"
                   onClick={() => fetchQuestions(selectedDifficulty, selectedSport, numQuestions)}
                 >
-                  Start Quiz
+                  Start Quiz!
                 </button>
               )}
             </div>
