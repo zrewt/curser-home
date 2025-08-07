@@ -393,7 +393,7 @@ function App() {
         ) : (
           showScore ? (
             <div className="score-section">
-              <h2>Quiz Complete!</h2>
+              <h2>Quiz Complete</h2>
               <p>You scored {score} out of {questions.length}</p>
               <p className="score-percentage">
                 {Math.round((score / questions.length) * 100)}%
